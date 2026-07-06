@@ -1,0 +1,13 @@
+| 类型 | 用途 | 示例 |
+|---|---|---|
+| `feat` | 新增功能 | `feat(auth): add GitHub login` |
+| `fix` | 修复缺陷 | `fix(rag): handle empty search results` |
+| `docs` | 只修改文档 | `docs: define product charter` |
+| `refactor` | 重构，不改变外部功能 | `refactor(agent): simplify state routing` |
+| `test` | 新增或修改测试 | `test(api): add repository tests` |
+| `perf` | 性能优化 | `perf(rag): reduce retrieval latency` |
+| `style` | 格式调整，不改变逻辑 | `style: format Python files` |
+| `build` | 构建系统或依赖 | `build: add project dependencies` |
+| `ci` | CI/CD 配置 | `ci: add GitHub Actions checks` |
+| `chore` | 日常维护和杂项 | `chore: update gitignore` |
+| `revert` | 撤销以前的提交 | `revert: revert GitHub auth change` |
