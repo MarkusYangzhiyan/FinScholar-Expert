@@ -1,0 +1,75 @@
+# Local secrets and machine-specific configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python virtual environments
+.venv/
+.venv-vllm/
+.venv-train/
+venv/
+env/
+
+# Python bytecode and build outputs
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test, type-checking and lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.hypothesis/
+
+# Notebook and editor metadata
+.ipynb_checkpoints/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+
+# Downloaded models and generated adapters
+models/pretrained/
+models/lora/
+*.safetensors
+*.gguf
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Rebuildable caches
+cache/
+
+# Private and generated data
+data/private_docs/
+data/processed/
+data/lightrag/
+data/milvus/
+
+# Generated artifacts and runtime state
+artifacts/
+logs/
+run/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak

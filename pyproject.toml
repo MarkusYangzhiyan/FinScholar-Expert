@@ -1,0 +1,161 @@
+[build-system]
+requires = ["hatchling>=1.27,<2.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "finscholar-expert"
+version = "0.1.0"
+description = "Evidence-grounded financial research and academic intelligence agent."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # API, configuration and orchestration
+    "fastapi>=0.139,<1.0",
+    "langgraph>=1.2,<2.0",
+    "orjson>=3.10,<4.0",
+    "pydantic>=2.11,<3.0",
+    "pydantic-settings>=2.9,<3.0",
+    "python-dotenv>=1.1,<2.0",
+    "python-multipart>=0.0.20,<1.0",
+    "structlog>=25.1,<26.0",
+    "uvicorn[standard]>=0.34,<1.0",
+
+    # LLM and RAG clients
+    "flagembedding>=1.4,<2.0",
+    "httpx>=0.28,<1.0",
+    "lightrag-hku[api]>=1.5.4,<2.0",
+    "modelscope[hub]>=1.37,<2.0",
+    "openai>=2.44,<3.0",
+    "pymilvus>=2.6,<2.7",
+    "rank-bm25>=0.2.2,<1.0",
+    "tenacity>=9.0,<10.0",
+    # Keep the main BGE runtime on the CUDA 12.x-compatible PyTorch line.
+    # vLLM owns its separate PyTorch build in .venv-vllm.
+    "torch>=2.8,<2.9",
+
+    # External tools
+    "arxiv>=4.0,<5.0",
+    "ddgs>=9.14,<10.0",
+    "tavily-python>=0.7.26,<1.0",
+    "wikipedia-api>=0.15,<1.0",
+    "yfinance>=1.5,<2.0",
+
+    # Document and numerical processing
+    "matplotlib>=3.10,<4.0",
+    "numpy>=2.2,<3.0",
+    "pandas>=2.2,<3.0",
+    "pillow>=11.0,<13.0",
+    "pymupdf>=1.25,<2.0",
+    "pypdf>=6.14,<7.0",
+]
+
+[dependency-groups]
+dev = [
+    "freezegun>=1.5,<2.0",
+    "mypy>=1.15,<2.0",
+    "pytest>=8.3,<10.0",
+    "pytest-asyncio>=0.26,<2.0",
+    "pytest-cov>=6.0,<8.0",
+    "pytest-timeout>=2.3,<3.0",
+    "respx>=0.22,<1.0",
+    "ruff>=0.11,<1.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/finscholar"]
+
+[tool.uv]
+required-version = ">=0.11.26,<0.12"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [
+    ".venv",
+    ".venv-vllm",
+    ".venv-train",
+    "artifacts",
+    "cache",
+    "data",
+    "logs",
+    "models",
+    "run",
+]
+
+[tool.ruff.lint]
+select = [
+    "ASYNC",
+    "B",
+    "E",
+    "F",
+    "I",
+    "RUF",
+    "S",
+    "UP",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.12"
+mypy_path = "src"
+plugins = ["pydantic.mypy"]
+strict = true
+warn_unused_configs = true
+show_error_codes = true
+pretty = true
+exclude = [
+    "artifacts/",
+    "cache/",
+    "data/",
+    "logs/",
+    "models/",
+    "run/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "FlagEmbedding.*",
+    "arxiv.*",
+    "ddgs.*",
+    "fitz.*",
+    "lightrag.*",
+    "modelscope.*",
+    "pymilvus.*",
+    "rank_bm25.*",
+    "tavily.*",
+    "wikipediaapi.*",
+    "yfinance.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.3"
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-config",
+    "--strict-markers",
+]
+asyncio_mode = "auto"
+markers = [
+    "integration: requires explicitly enabled external services",
+    "smoke: requires a deployed FinScholar environment",
+    "eval: runs model or retrieval quality evaluation",
+    "gpu: requires an explicitly enabled GPU runtime",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["finscholar"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 0
