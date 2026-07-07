@@ -11,3 +11,9 @@
 | `ci` | CI/CD 配置 | `ci: add GitHub Actions checks` |
 | `chore` | 日常维护和杂项 | `chore: update gitignore` |
 | `revert` | 撤销以前的提交 | `revert: revert GitHub auth change` |
+
+
+### 输出当前 Git 仓库的根目录（工作区的顶层目录）绝对路径
+git rev-parse --show-toplevel
+
+### 
