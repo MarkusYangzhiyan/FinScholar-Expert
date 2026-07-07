@@ -1,0 +1,3 @@
+# Milvus、LightRAG、外部工具适配器集成测试
+# 示例：test_milvus_adapter.py
+# integration 表示多个组件联合验证

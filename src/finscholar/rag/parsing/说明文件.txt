@@ -1,0 +1,3 @@
+# PDF、表格、图片和文本解析代码
+# 示例：pdf_parser.py、table_parser.py
+# parsing 表示“把原始文档解析成结构化内容”

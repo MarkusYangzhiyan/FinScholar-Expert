@@ -1,0 +1,3 @@
+# 路由准确率、检索质量、证据支持率评测
+# 示例：test_retrieval_quality.py
+# evals 是 AI 项目中常用的评测目录名

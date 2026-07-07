@@ -1,0 +1,3 @@
+# FastAPI 路由文件：
+# health.py、query.py、documents.py
+# 命名原因：routes 表示 HTTP 路由集合
