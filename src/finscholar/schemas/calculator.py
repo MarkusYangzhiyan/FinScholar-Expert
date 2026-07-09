@@ -84,4 +84,3 @@ class CalculatorOutput(BaseModel):
     unit : str | None = None
 
     calculated_at : datetime 
-
