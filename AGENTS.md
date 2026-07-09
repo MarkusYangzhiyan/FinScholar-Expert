@@ -4,15 +4,6 @@
 
 本文件是 `FinScholar-Expert` 仓库的 Agent 工程规范，适用于代码生成、修改、测试、审查、文档维护和环境配置。
 
-开始工作前必须阅读：
-
-1. `AGENTS.md`
-2. `项目背景与说明.md`
-3. `项目运行环境与启动SOP.md`
-4. 与当前任务直接相关的源码、测试和配置
-
-若文件内容存在冲突，优先级为：用户当前明确要求 > `AGENTS.md` > 专项设计文档 > 项目背景与 SOP。架构或安全约束无法兼容时，停止扩展实现并向用户说明。
-
 ## 2. 项目目标
 
 FinScholar Expert 是面向金融投研、大宗商品分析与学术情报检索的单智能体系统。系统使用 Python 与 LangGraph 构建确定性的状态机工作流，融合公开数据、实时新闻、金融行情、学术论文和私有财报。
@@ -41,13 +32,14 @@ FinScholar Expert 是面向金融投研、大宗商品分析与学术情报检�
 
 ### 3.2 模型职责
 
-| 职责 | 模型或服务 | 约束 |
-| --- | --- | --- |
-| 本地路由 | Qwen3.5-4B | 关闭思考模式；负责意图、JSON 策略和 Function Calling |
-| 云端生成 | DeepSeek-v4 API | 具体 Model ID 由配置提供，不得硬编码 |
-| 视觉解析 | Qwen-VL-Max API | 用于复杂图表、表格与图片解析 |
-| Embedding | BGE-M3 | Dense 向量固定为 1024 维 |
-| Reranker | BGE-Reranker-v2-M3 | 对混合召回候选进行重排 |
+
+| 职责      | 模型或服务         | 约束                                                 |
+| --------- | ------------------ | ---------------------------------------------------- |
+| 本地路由  | Qwen3.5-4B         | 关闭思考模式；负责意图、JSON 策略和 Function Calling |
+| 云端生成  | DeepSeek-v4 API    | 具体 Model ID 由配置提供，不得硬编码                 |
+| 视觉解析  | Qwen-3.7-plus API | 用于复杂图表、表格与图片解析                         |
+| Embedding | BGE-M3             | Dense 向量固定为 1024 维                             |
+| Reranker  | BGE-Reranker-v2-M3 | 对混合召回候选进行重排                               |
 
 LangGraph 节点不得直接加载 Qwen、BGE 或 Reranker。模型能力必须通过可替换的客户端或服务接口注入，例如 `RouterClient`、`EmbeddingService` 和 `RerankerService`。
 
@@ -67,8 +59,8 @@ LangGraph 节点不得直接加载 Qwen、BGE 或 Reranker。模型能力必须�
 
 ### 3.4 RAG
 
-- LightRAG 是 `Private_Doc_RAG` 的核心组成，不是可选插件。
-- LangGraph 负责上层 Agent 状态机与工具编排；LightRAG 负责知识图谱构建、图谱检索和文档检索。不得混淆两者职责。
+- LightRAG 是 `Private_Doc_RAG` 的核心组成。
+- LangGraph 负责上层 Agent 状态机与工具编排；LightRAG 负责知识图谱构建、图谱检索和文档检索。
 - 检索必须融合传统混合 RAG 与 LightRAG：BGE-M3 Dense、BM25 Sparse、LightRAG 图谱/向量召回和 Reranker 共同组成完整链路。
 - 向量数据库使用 Milvus，管理界面使用 Attu。
 - LightRAG 的 Vector Storage 使用 `MilvusVectorDBStorage`。
@@ -79,17 +71,8 @@ LangGraph 节点不得直接加载 Qwen、BGE 或 Reranker。模型能力必须�
 - Milvus Dense 字段维度必须为 1024。
 - 建库与查询必须使用同一 Embedding 模型和版本。
 - 更换 Embedding 模型必须显式迁移并重新向量化，不得复用旧向量。
-- Attu 镜像版本必须固定并核对许可证；不得假设新版本仍为开源许可。
 
-LightRAG 的实体关系抽取和查询生成不得使用 Qwen3.5-4B 路由模型。Qwen3.5-4B 只负责 Agent 工具路由；LightRAG 的 LLM 角色应使用配置的云端强模型，当前方案为 DeepSeek-v4 API。视觉角色使用 Qwen-VL-Max，Embedding 使用 BGE-M3，Reranker 使用 BGE-Reranker-v2-M3。
-
-默认切块建议：
-
-- 叙述文本按语义结构切分，目标 250～500 Token。
-- 相邻块重叠 50～100 Token。
-- 不得机械截断表格、公式、标题与正文关系。
-- 表格必须保留标题、列名、单位、报告期、页码和脚注。
-- 200 Token 的 Chunk 可以使用；判断标准是语义完整性，不是与 1024 维向量进行比例匹配。
+LightRAG 的实体关系抽取和查询生成使用 DeepSeek-v4 AP。Qwen3.5-4B 只负责 Agent 工具路由。视觉角色使用 Qwen-3.7-plus，Embedding 使用 BGE-M3，Reranker 使用 BGE-Reranker-v2-M3。
 
 ## 4. 证据与审计规范
 
@@ -138,43 +121,30 @@ provider
 
 ### 5.1 统一环境
 
-- 操作系统基线：Ubuntu 24.04。
 - Python：3.12。
 - 包管理器和虚拟环境工具：`uv`。
 - 不使用 Conda 管理项目依赖。
-- 本地 WSL2 与 AutoDL 必须根据相同锁文件重建环境。
 
 三个环境均在本地和 AutoDL 创建：
 
-| 环境 | 用途 | 依赖来源 |
-| --- | --- | --- |
-| `.venv` | 主应用、LangGraph、LightRAG Core/API/WebUI、工具、RAG 客户端与测试 | `pyproject.toml` + `uv.lock` |
-| `.venv-vllm` | Qwen3.5 推理与 LoRA 加载 | `requirements-vllm.lock.txt` |
-| `.venv-train` | LoRA 数据处理与训练 | `requirements-train.in` + `requirements-train.lock.txt` |
+
+| 环境          | 用途                                                               | 依赖来源                                                |
+| ------------- | ------------------------------------------------------------------ | ------------------------------------------------------- |
+| `.venv`       | 主应用、LangGraph、LightRAG Core/API/WebUI、工具、RAG 客户端与测试 | `pyproject.toml` + `uv.lock`                            |
+| `.venv-vllm`  | Qwen3.5 推理与 LoRA 加载                                           | `requirements-vllm.lock.txt`                            |
+| `.venv-train` | LoRA 数据处理与训练                                                | `requirements-train.in` + `requirements-train.lock.txt` |
 
 本地只延迟执行需要 4090 的模型加载、推理、训练和部署操作，不得通过删减依赖维护另一套环境。
 
 物理 GPU、NVIDIA 驱动、API 密钥和服务地址属于机器运行层，可以不同；Python 依赖版本和配置字段必须一致。
 
-### 5.2 环境操作规则
+### 5.2 模型下载与存储
 
-- 不复制 `.venv*` 到 AutoDL；通过锁文件重建。
-- 不在 AutoDL 首次解析或升级依赖。
-- 依赖升级先在本地分支完成并更新锁文件。
-- vLLM 和训练依赖不得安装进主应用 `.venv`。
-- 不在同一 Shell 中反复 `activate` 多个环境；调用对应环境的绝对或仓库相对可执行文件。
-- 不擅自安装另一套 CUDA Toolkit 覆盖 AutoDL 镜像环境。
-- AutoDL 普通容器实例不支持 Docker；需要 Milvus、Attu 和 Docker Sandbox 的完整部署必须使用可运行 Docker 的主机或经批准的外部服务。
-
-具体命令以 `项目运行环境与启动SOP.md` 为准。
-
-### 5.3 模型下载与存储
-
-- 所有需要下载到本地的模型统一从 ModelScope 获取，不使用其他模型仓库作为项目下载源。
+- 所有需要下载到本地的模型统一从 ModelScope 获取。
 - 下载完成、可被项目直接加载的模型固定放在 `models/pretrained/`；ModelScope 下载缓存放在 `cache/modelscope/`。
 - Qwen3.5-4B、BGE-M3 和 BGE-Reranker-v2-M3 必须记录 ModelScope Model ID、Revision、下载时间和校验信息，记录文件放在 `models/manifests/`。
 - 代码和启动命令使用由 `PROJECT_ROOT` 派生的本地模型路径，不得依赖运行时隐式网络下载。
-- DeepSeek-v4 和 Qwen-VL-Max 是 API 服务，不在 `models/` 中创建本地权重目录。
+- DeepSeek-v4 和 Qwen-3.7-plus 是 API 服务，不在 `models/` 中创建本地权重目录。
 
 ## 6. 目录规范
 
@@ -190,74 +160,7 @@ AutoDL 根目录：
 /root/autodl-tmp/FinScholar-Expert
 ```
 
-两处必须保持相同的相对结构：
-
-```text
-FinScholar-Expert/
-├── .venv/
-├── .venv-vllm/
-├── .venv-train/
-├── models/
-│   ├── pretrained/
-│   ├── lora/
-│   └── manifests/
-├── cache/
-│   ├── modelscope/
-│   ├── torch/
-│   └── uv/
-├── data/
-├── artifacts/
-├── logs/
-├── run/
-├── deploy/
-├── src/
-└── tests/
-```
-
-所有项目模型、缓存、数据和产物必须位于项目根目录之下。代码中禁止硬编码本地或 AutoDL 绝对路径，必须通过配置和 `PROJECT_ROOT` 派生。
-
-不得提交：
-
-```text
-.venv/
-.venv-vllm/
-.venv-train/
-.env
-models/pretrained/
-cache/
-logs/
-run/
-私有文档
-真实训练数据
-```
-
 ## 7. 推荐代码结构
-
-创建新模块时优先遵循：
-
-```text
-src/finscholar/
-├── api/             # FastAPI 路由、请求与响应
-├── config/          # Pydantic Settings 和配置校验
-├── graph/           # LangGraph 图构建与条件边
-├── state/           # TypedDict/Pydantic 状态定义
-├── nodes/           # 单一职责节点
-├── tools/           # 七个工具及其适配器
-├── models/          # 模型客户端协议，不存放权重
-├── rag/             # 解析、切块、检索、重排和证据组装
-├── schemas/         # 跨模块数据契约
-├── sandbox/         # 代码执行隔离客户端
-└── observability/   # 日志、追踪和审计事件
-
-tests/
-├── unit/
-├── integration/
-├── smoke/
-├── evals/
-└── fixtures/
-```
-
-不要因为目录尚未存在而把代码临时堆在项目根目录。
 
 `rag/` 中应明确区分 LightRAG Adapter、Milvus Adapter、BM25 Retriever、Reranker 与 Evidence Fusion，不得把整个检索链路写成单个函数。
 
@@ -367,41 +270,18 @@ AutoDL 普通容器不支持 Docker。没有已批准的外部 Sandbox 时，不
 - Sandbox 越权、网络、超时与资源限制。
 - Hallucination Grader 对“有证据、缺证据、证据冲突”的处理。
 
-### 13.3 常用命令
-
-在相关文件已经创建后使用：
-
-```bash
-uv sync --frozen --group dev
-.venv/bin/ruff check .
-.venv/bin/mypy src
-.venv/bin/python -m pytest tests/unit -q
-```
-
-完整环境再运行：
-
-```bash
-.venv/bin/python -m pytest tests/integration -q
-.venv/bin/python -m pytest tests/smoke -q
-```
-
-Agent 必须如实报告执行过的命令和结果。未运行的测试不得描述为通过。
-
 ## 14. 变更工作流
 
 执行编码任务时遵循：
-
-1. 检查 `git status --short`，保留用户已有修改。
-2. 阅读相关设计、实现和测试，确认影响范围。
-3. 优先做最小、内聚、可回滚的修改。
-4. 先更新或新增测试，再验证相关测试和静态检查。
-5. 配置、接口、目录或启动方式改变时同步更新 SOP 和 `.env.example`。
-6. 最终说明修改文件、验证结果、未覆盖风险和必要的后续步骤。
+1. 阅读相关设计、实现和测试，确认影响范围。
+2. 优先做最小、内聚、可回滚的修改。
+3. 先更新或新增测试，再验证相关测试和静态检查。
+4. 配置、接口、目录或启动方式改变时同步更新 SOP 和 `.env.example`。
+5. 最终说明修改文件、验证结果、未覆盖风险和必要的后续步骤。
 
 未经用户明确授权不得：
 
-- 创建、切换或删除 Git 分支。
-- Commit、Push 或创建 Pull Request。
+- 创建、切换或删除 Git 分支和其他git操作。
 - 删除用户文件、数据、模型或向量库。
 - 清空缓存或重建 Milvus Collection。
 - 调用产生明显费用的批量 API 或模型任务。
