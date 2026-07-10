@@ -8,7 +8,7 @@
 from typing import Any, TypedDict
 
 from finscholar.schemas.calculator import  CalculatorOutput
-
+from finscholar.schemas.router import RouterDecision, ToolName
 
 class AgentState(TypedDict,total = False):
     """FinScholar Expert 的 LangGraph 主状态。
@@ -27,6 +27,16 @@ class AgentState(TypedDict,total = False):
 
     calculator_error_message : str | None
 
+    router_selected_tool : ToolName | None
+
+    router_decision : RouterDecision | None
+
+    router_reason : str | None
+
+    router_error_type : str | None
+
+    router_error_message : str | None
+
 
 def create_initial_agent_state(user_query:str) -> AgentState:
     """创建最小 Agent 初始状态。
@@ -40,6 +50,11 @@ def create_initial_agent_state(user_query:str) -> AgentState:
         "calculator_output":None,
         "calculator_error_type":None,
         "calculator_error_message":None,
+        "router_selected_tool": None,
+        "router_decision": None,
+        "router_reason": None,
+        "router_error_type": None,
+        "router_error_message": None,
     }
 
 __all__ = [
