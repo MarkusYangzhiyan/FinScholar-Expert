@@ -9,19 +9,15 @@
 
 from typing import TypedDict,Any
 from pydantic import ValidationError
+
 from finscholar.schemas.calculator import CalculatorInput, CalculatorOutput
 from finscholar.tools.math_calculator import MathCalculator, CalculatorError
+from finscholar.state.agent_state import AgentState
+
 
 # total = False: 字典里的键都是可选的
-class CalculatorNodeState(TypedDict,total = False):
-    """Calculator Node 当前需要读写的最小状态字段。
-
-    这是 Calculator 垂直切片的临时最小 state。
-    后续当 Agent 总状态稳定后，可以迁移到统一的 AgentState 中。
-    """
-
-    # 上游路由节点或测试代码放入的 Calculator 请求。
-    calculator_input : dict[str,Any]
+class CalculatorNodeUpdate(TypedDict,total = False):
+    """Calculator Node 写回 AgentState 的局部增量。"""
 
     # Calculator 成功执行后的结构化结果。
     calculator_output : CalculatorOutput 
@@ -34,9 +30,9 @@ class CalculatorNodeState(TypedDict,total = False):
 
 
 def run_calculator_node(
-    state: CalculatorNodeState,
+    state: AgentState,
     calculator: MathCalculator | None = None,
-) -> CalculatorNodeState:
+) -> CalculatorNodeUpdate:
     """执行 Calculator 节点，并返回对 LangGraph state 的局部更新。
 
     Args:
@@ -85,6 +81,6 @@ def run_calculator_node(
 
 
 __all__ = [
-    "CalculatorNodeState",
+    "CalculatorNodeUpdate",
     "run_calculator_node",
 ]
