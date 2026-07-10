@@ -1,0 +1,23 @@
+# FinScholar Expert 全局正则配置。
+# 项目内所有需要长期维护的正则规则都统一放在这里。
+# Python 代码中不得把这类规则硬编码在业务节点里。
+
+[router.profit_margin_query]
+pattern = '(?:利润率|profit\s*margin)'
+ignore_case = true
+
+[router.profit]
+pattern = '(?:profit|利润)\s*(?:=|:|：|为|是)?\s*(?P<value>[-+]?\d+(?:\.\d+)?)'
+ignore_case = true
+
+[router.revenue]
+pattern = '(?:revenue|收入|营收)\s*(?:=|:|：|为|是)?\s*(?P<value>[-+]?\d+(?:\.\d+)?)'
+ignore_case = true
+
+[router.explicit_expression]
+pattern = '(?:expression|formula|表达式|公式)\s*(?:=|:|：)\s*(?P<expression>[0-9A-Za-z_+\-*/().\s]+)'
+ignore_case = true
+
+[router.unit]
+pattern = '(?:unit|单位)\s*(?:=|:|：)\s*(?P<unit>[^\s,，;；]+)'
+ignore_case = true
