@@ -76,13 +76,13 @@ git rev-parse --show-toplevel
 
 ```bash
 export PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-mkdir -p models/huggingface models/lora
+mkdir -p models/modelscope models/lora
 mkdir -p cache/torch cache/uv
 mkdir -p logs run data artifacts
 
-export HF_HOME="$PROJECT_ROOT/models/huggingface"
-export HUGGINGFACE_HUB_CACHE="$PROJECT_ROOT/models/huggingface/hub"
-export TRANSFORMERS_CACHE="$PROJECT_ROOT/models/huggingface/transformers"
+export HF_HOME="$PROJECT_ROOT/models/modelscope"
+export modelscope_HUB_CACHE="$PROJECT_ROOT/models/modelscope/hub"
+export TRANSFORMERS_CACHE="$PROJECT_ROOT/models/modelscope/transformers"
 export TORCH_HOME="$PROJECT_ROOT/cache/torch"
 export UV_CACHE_DIR="$PROJECT_ROOT/cache/uv"
 export TOKENIZERS_PARALLELISM=false
@@ -225,9 +225,9 @@ cd /home/ubuntu/FinScholar-Expert
 source "$HOME/.local/bin/env"
 conda deactivate 2>/dev/null || true
 export PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-export HF_HOME="$PROJECT_ROOT/models/huggingface"
-export HUGGINGFACE_HUB_CACHE="$PROJECT_ROOT/models/huggingface/hub"
-export TRANSFORMERS_CACHE="$PROJECT_ROOT/models/huggingface/transformers"
+export HF_HOME="$PROJECT_ROOT/models/modelscope"
+export modelscope_HUB_CACHE="$PROJECT_ROOT/models/modelscope/hub"
+export TRANSFORMERS_CACHE="$PROJECT_ROOT/models/modelscope/transformers"
 export TORCH_HOME="$PROJECT_ROOT/cache/torch"
 export UV_CACHE_DIR="$PROJECT_ROOT/cache/uv"
 export TOKENIZERS_PARALLELISM=false
@@ -286,7 +286,7 @@ sha256sum uv.lock requirements-vllm.lock.txt requirements-train.lock.txt
 .venv-vllm/
 .venv-train/
 .env
-models/huggingface/
+models/modelscope/
 cache/
 logs/
 run/
@@ -356,7 +356,7 @@ FinScholar-Expert/
 ├── .venv-vllm/              # Qwen/vLLM 环境，本地与 AutoDL 均创建
 ├── .venv-train/             # LoRA 训练环境，本地与 AutoDL 均创建
 ├── models/
-│   ├── huggingface/         # Hugging Face 模型与下载缓存
+│   ├── modelscope/         # modelscope 模型与下载缓存
 │   └── lora/                # Qwen3.5 LoRA Adapter
 ├── cache/
 │   ├── torch/               # PyTorch 缓存
@@ -460,9 +460,9 @@ conda config --set auto_activate_base false
 grep -q 'FINSCHOLAR_RUNTIME_ENV' /root/.bashrc || tee -a /root/.bashrc >/dev/null <<'EOF'
 
 # FINSCHOLAR_RUNTIME_ENV
-export HF_HOME=/root/autodl-tmp/FinScholar-Expert/models/huggingface
-export HUGGINGFACE_HUB_CACHE=/root/autodl-tmp/FinScholar-Expert/models/huggingface/hub
-export TRANSFORMERS_CACHE=/root/autodl-tmp/FinScholar-Expert/models/huggingface/transformers
+export HF_HOME=/root/autodl-tmp/FinScholar-Expert/models/modelscope
+export modelscope_HUB_CACHE=/root/autodl-tmp/FinScholar-Expert/models/modelscope/hub
+export TRANSFORMERS_CACHE=/root/autodl-tmp/FinScholar-Expert/models/modelscope/transformers
 export TORCH_HOME=/root/autodl-tmp/FinScholar-Expert/cache/torch
 export UV_CACHE_DIR=/root/autodl-tmp/FinScholar-Expert/cache/uv
 export TOKENIZERS_PARALLELISM=false
@@ -517,7 +517,7 @@ cd /root/autodl-tmp/FinScholar-Expert
 
 ```bash
 cd /root/autodl-tmp/FinScholar-Expert
-mkdir -p models/huggingface models/lora
+mkdir -p models/modelscope models/lora
 mkdir -p cache/torch cache/uv
 mkdir -p logs run data artifacts
 ```
@@ -611,21 +611,11 @@ uv pip sync \
 
 ### 5.9 下载并缓存模型
 
-如模型需要 Hugging Face Token，先在当前 Shell 临时设置：
-
-```bash
-read -rsp 'HF_TOKEN: ' HF_TOKEN
-export HF_TOKEN
-echo
-```
-
-这种方式不会把 Token 明文写入 Shell 历史。
-
 下载 Qwen3.5-4B：
 
 ```bash
 .venv-vllm/bin/python - <<'PY'
-from huggingface_hub import snapshot_download
+from modelscope_hub import snapshot_download
 
 snapshot_download(
     repo_id="Qwen/Qwen3.5-4B",
@@ -638,7 +628,7 @@ BGE-M3 与 Reranker 在主应用环境中首次加载时会自动下载到 `HF_H
 
 ```bash
 .venv/bin/python - <<'PY'
-from huggingface_hub import snapshot_download
+from modelscope_hub import snapshot_download
 
 for model_id in (
     "BAAI/bge-m3",
@@ -652,7 +642,7 @@ PY
 下载完成后检查数据盘：
 
 ```bash
-du -sh /root/autodl-tmp/FinScholar-Expert/models/huggingface
+du -sh /root/autodl-tmp/FinScholar-Expert/models/modelscope
 df -h /root/autodl-tmp
 ```
 
@@ -1102,11 +1092,10 @@ tail -n 200 logs/api.log
 ## 13. 官方参考资料
 
 - [AutoDL 实例环境与目录](https://www.autodl.com/docs/env/)
-- [AutoDL Hugging Face 缓存配置](https://www.autodl.com/docs/huggingface/)
 - [AutoDL SSH 使用说明](https://api.autodl.com/docs/ssh/)
 - [AutoDL 实例数据保留规则](https://www.autodl.com/docs/instance_data/)
 - [uv 官方文档](https://docs.astral.sh/uv/)
 - [vLLM GPU 安装文档](https://docs.vllm.ai/en/latest/getting_started/installation/gpu/)
-- [Qwen3.5-4B 官方模型卡](https://huggingface.co/Qwen/Qwen3.5-4B)
+- [Qwen3.5-4B 官方模型卡](https://modelscope.co/Qwen/Qwen3.5-4B)
 - [Milvus Standalone 环境要求](https://milvus.io/docs/v2.6.x/prerequisite-docker.md)
 - [Attu 官方仓库与版本兼容表](https://github.com/zilliztech/attu)
