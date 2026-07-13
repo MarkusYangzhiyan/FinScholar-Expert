@@ -95,7 +95,7 @@ select = [
 ]
 
 # 中文注释和 Docstring 允许使用全角中文逗号。
-allowed-confusables = ["，","：","；","（","）"]
+allowed-confusables = ["，","：","；","（","）","？"]
 
 
 [tool.ruff.lint.per-file-ignores]
