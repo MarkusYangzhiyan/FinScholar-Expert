@@ -41,6 +41,45 @@ def test_math_calculator_can_calculate_profit_margin() -> None:
     assert result.unit == "%"
     assert result.calculated_at.tzinfo is not None
 
+# ----------------------------------------------------
+# 一元正负号运算
+# ----------------------------------------------------
+def test_math_calculator_can_negate_variable() -> None:
+    """Calculator 应支持对变量使用一元负号。"""
+
+    request = CalculatorInput(
+        expression="-profit",
+        variables={
+            "profit": Decimal("25"),
+        },
+    )
+
+    result = MathCalculator().calculate(request)
+
+    assert result.formula == "-profit"
+    assert result.input_values == {
+        "profit": Decimal("25"),
+    }
+    assert result.result == Decimal("-25")
+    assert result.unit is None
+
+
+def test_math_calculator_can_negate_parenthesized_expression() -> None:
+    """Calculator 应支持对括号中的完整表达式使用一元负号。"""
+
+    request = CalculatorInput(
+        expression="-(1 + 2)",
+        variables={},
+    )
+
+    result = MathCalculator().calculate(request)
+
+    assert result.formula == "-(1 + 2)"
+    assert result.input_values == {}
+    assert result.result == Decimal("-3")
+    assert result.unit is None
+
+
 # ------------------------------------------------------
 # 未知变量/缺少变量 报错
 # ------------------------------------------------------
