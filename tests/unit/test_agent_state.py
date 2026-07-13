@@ -13,3 +13,8 @@ def test_create_initial_agent_state() -> None:
     assert state["calculator_output"] is None
     assert state["calculator_error_type"] is None
     assert state["calculator_error_message"] is None
+    assert state["router_selected_tool"] is None
+    assert state["router_decision"] is None
+    assert state["router_reason"] is None
+    assert state["router_error_type"] is None
+    assert state["router_error_message"] is None
