@@ -149,7 +149,7 @@ class MathCalculator:
         if isinstance(ast_parsed_expression.op,ast.UAdd):
             return operand
         
-        if isinstance(ast_parsed_expression,ast.USub):
+        if isinstance(ast_parsed_expression.op,ast.USub):
             return -operand
         
         raise UnsafeExpressionError(
