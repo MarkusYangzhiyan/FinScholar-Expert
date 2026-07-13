@@ -25,7 +25,6 @@ from finscholar.nodes.calculator_node import run_calculator_node
 from finscholar.nodes.router_node import run_router_node
 from finscholar.state.agent_state import AgentState, create_initial_agent_state
 
-
 # LangGraph 中使用的节点名称。
 ROUTER_NODE_NAME = "router"
 CALCULATOR_NODE_NAME = "calculator"
@@ -93,6 +92,7 @@ def build_router_calculator_graph() -> CompiledStateGraph:
     app = graph_builder.compile()
 
     return app
+
 
 def invoke_router_calculator_graph(
     user_query: str,

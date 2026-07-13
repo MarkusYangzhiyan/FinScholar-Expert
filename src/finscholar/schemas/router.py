@@ -11,7 +11,6 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from finscholar.schemas.calculator import CalculatorInput
 
-
 ToolName = Literal[
     "Math_Calculator",
     "Unsupported",
@@ -39,23 +38,11 @@ class RouterDecision(BaseModel):
     def validate_tool_payload(self) -> Self:
         """校验工具选择与工具参数是否匹配。"""
 
-        if (
-            self.selected_tool == "Math_Calculator"
-            and self.calculator_input is None
-        ):
-            raise ValueError(
-                "selected_tool 为 Math_Calculator 时，"
-                "必须提供 calculator_input"
-            )
+        if self.selected_tool == "Math_Calculator" and self.calculator_input is None:
+            raise ValueError("selected_tool 为 Math_Calculator 时，必须提供 calculator_input")
 
-        if (
-            self.selected_tool == "Unsupported"
-            and self.calculator_input is not None
-        ):
-            raise ValueError(
-                "selected_tool 为 Unsupported 时，"
-                "不得提供 calculator_input"
-            )
+        if self.selected_tool == "Unsupported" and self.calculator_input is not None:
+            raise ValueError("selected_tool 为 Unsupported 时，不得提供 calculator_input")
 
         return self
 

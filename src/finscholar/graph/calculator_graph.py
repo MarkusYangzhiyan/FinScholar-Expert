@@ -6,14 +6,15 @@ AgentState -> Calculator Node -> AgentState。
 当前图不包含 Router、RAG、Grader 或最终回答生成。
 后续完整 Agent 图会在此基础上扩展多个节点和条件边。
 """
-from typing import Any, cast
+
 from functools import lru_cache
+from typing import Any, cast
+
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
-from finscholar.state.agent_state import AgentState, create_initial_agent_state
 from finscholar.nodes.calculator_node import run_calculator_node
-
+from finscholar.state.agent_state import AgentState, create_initial_agent_state
 
 CALCULATOR_NODE_NAME = "calculator"
 
@@ -41,14 +42,15 @@ def build_calculator_graph() -> CompiledStateGraph:
     )
 
     workflow.add_edge(START, CALCULATOR_NODE_NAME)
-    workflow.add_edge(CALCULATOR_NODE_NAME,END)
+    workflow.add_edge(CALCULATOR_NODE_NAME, END)
     app = workflow.compile()
     return app
 
+
 # 方便测试和调用的小包装
 def invoke_calculator_graph(
-    calculator_input : dict[str,Any],
-    user_query : str = "执行 Calculator 工具",
+    calculator_input: dict[str, Any],
+    user_query: str = "执行 Calculator 工具",
 ) -> AgentState:
     """运行 Calculator 最小图，并返回执行后的 AgentState。
 
@@ -62,11 +64,11 @@ def invoke_calculator_graph(
 
     initial_state = create_initial_agent_state(user_query)
 
-    initial_state['calculator_input'] = calculator_input
+    initial_state["calculator_input"] = calculator_input
 
     result = build_calculator_graph().invoke(initial_state)
 
-    return cast(AgentState,result)
+    return cast(AgentState, result)
 
 
 __all__ = [

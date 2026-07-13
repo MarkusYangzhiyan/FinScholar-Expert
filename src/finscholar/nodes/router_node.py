@@ -32,7 +32,7 @@ class RouterNodeUpdate(TypedDict, total=False):
     router_error_type: str | None
     router_error_message: str | None
 
-    # Router 会为 Calculator Node 准备这个字段。  from user_query 
+    # Router 会为 Calculator Node 准备这个字段。  from user_query
     calculator_input: dict[str, Any] | None
 
 
@@ -92,9 +92,7 @@ def _make_rule_based_decision(
     """
 
     if existing_calculator_input is not None:
-        calculator_input = CalculatorInput.model_validate(
-            existing_calculator_input
-        )
+        calculator_input = CalculatorInput.model_validate(existing_calculator_input)
 
         return RouterDecision(
             selected_tool="Math_Calculator",
@@ -130,9 +128,7 @@ def _make_rule_based_decision(
 def _parse_profit_margin_query(user_query: str) -> CalculatorInput | None:
     """从简单利润率问题中抽取 profit 和 revenue。"""
 
-    profit_margin_pattern = get_regex_pattern(
-        "router.profit_margin_query"
-    )
+    profit_margin_pattern = get_regex_pattern("router.profit_margin_query")
 
     if profit_margin_pattern.search(user_query) is None:
         return None
@@ -164,9 +160,7 @@ def _parse_explicit_expression_query(
 ) -> CalculatorInput | None:
     """识别显式表达式，例如：表达式: 1 + 2 * 3。"""
 
-    expression_pattern = get_regex_pattern(
-        "router.explicit_expression"
-    )
+    expression_pattern = get_regex_pattern("router.explicit_expression")
 
     match = expression_pattern.search(user_query)
 
@@ -229,9 +223,7 @@ def _decision_to_update(decision: RouterDecision) -> RouterNodeUpdate:
 
     if decision.calculator_input is not None:
         # 使用 json 模式，让写入 state 的 calculator_input 更接近模型工具调用参数。
-        calculator_input = decision.calculator_input.model_dump(
-            mode="json"
-        )
+        calculator_input = decision.calculator_input.model_dump(mode="json")
 
     return {
         "router_selected_tool": decision.selected_tool,

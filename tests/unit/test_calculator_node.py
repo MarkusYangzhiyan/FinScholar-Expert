@@ -2,7 +2,7 @@
 
 from decimal import Decimal
 
-from finscholar.nodes.calculator_node import run_calculator_node, CalculatorNodeUpdate
+from finscholar.nodes.calculator_node import run_calculator_node
 
 
 def test_run_calculator_node_returns_output_and_clears_error() -> None:

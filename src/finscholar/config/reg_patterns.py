@@ -16,9 +16,10 @@
 
 import re
 import tomllib
+from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from finscholar.config.settings import get_settings
 
@@ -41,17 +42,13 @@ def load_regex_config_from_path(config_path: Path) -> dict[str, Any]:
     """从指定路径读取正则配置文件。"""
 
     if not config_path.is_file():
-        raise RegexPatternConfigError(
-            f"正则配置文件不存在：{config_path}"
-        )
+        raise RegexPatternConfigError(f"正则配置文件不存在：{config_path}")
 
     with config_path.open("rb") as file:
         raw_config = tomllib.load(file)
 
     if not isinstance(raw_config, dict):
-        raise RegexPatternConfigError(
-            "reg_patterns.toml 顶层配置格式错误"
-        )
+        raise RegexPatternConfigError("reg_patterns.toml 顶层配置格式错误")
 
     return raw_config
 
@@ -91,29 +88,21 @@ def _find_pattern_config(
     parts = pattern_name.split(".")
 
     if any(not part for part in parts):
-        raise RegexPatternConfigError(
-            f"正则项名称格式错误：{pattern_name}"
-        )
+        raise RegexPatternConfigError(f"正则项名称格式错误：{pattern_name}")
 
     current: Any = config
 
     for part in parts:
         if not isinstance(current, Mapping):
-            raise RegexPatternConfigError(
-                f"正则项路径无效：{pattern_name}"
-            )
+            raise RegexPatternConfigError(f"正则项路径无效：{pattern_name}")
 
         if part not in current:
-            raise RegexPatternConfigError(
-                f"正则项不存在：{pattern_name}"
-            )
+            raise RegexPatternConfigError(f"正则项不存在：{pattern_name}")
 
         current = current[part]
 
     if not isinstance(current, Mapping):
-        raise RegexPatternConfigError(
-            f"正则项配置格式错误：{pattern_name}"
-        )
+        raise RegexPatternConfigError(f"正则项配置格式错误：{pattern_name}")
 
     return current
 
@@ -127,9 +116,7 @@ def _compile_pattern(
     pattern = pattern_config.get("pattern")
 
     if not isinstance(pattern, str) or not pattern:
-        raise RegexPatternConfigError(
-            f"正则 {pattern_name}.pattern 必须是非空字符串"
-        )
+        raise RegexPatternConfigError(f"正则 {pattern_name}.pattern 必须是非空字符串")
 
     flags = _build_regex_flags(
         pattern_name=pattern_name,
@@ -139,9 +126,7 @@ def _compile_pattern(
     try:
         return re.compile(pattern, flags=flags)
     except re.error as exc:
-        raise RegexPatternConfigError(
-            f"正则 {pattern_name} 编译失败：{exc}"
-        ) from exc
+        raise RegexPatternConfigError(f"正则 {pattern_name} 编译失败：{exc}") from exc
 
 
 def _build_regex_flags(
@@ -163,9 +148,7 @@ def _build_regex_flags(
         option_value = pattern_config.get(option_name, False)
 
         if not isinstance(option_value, bool):
-            raise RegexPatternConfigError(
-                f"正则 {pattern_name}.{option_name} 必须是布尔值"
-            )
+            raise RegexPatternConfigError(f"正则 {pattern_name}.{option_name} 必须是布尔值")
 
         if option_value:
             flags |= flag_value

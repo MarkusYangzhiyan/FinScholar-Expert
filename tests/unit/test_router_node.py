@@ -1,4 +1,5 @@
 """
+测试规则版 Router Node。
 1. state 已有 calculator_input 时，Router 选择 Math_Calculator
 2. user_query 是利润率问题时，Router 自动生成 calculator_input
 3. user_query 是显式表达式时，Router 自动生成 calculator_input
@@ -6,11 +7,6 @@
 5. 缺少 user_query 返回 MissingUserQuery
 6. 已有 calculator_input 但格式错误时，返回 RouterInputValidationError
 """
-
-
-
-
-"""测试规则版 Router Node。"""
 
 from finscholar.nodes.router_node import run_router_node
 

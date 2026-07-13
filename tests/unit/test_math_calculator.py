@@ -1,14 +1,14 @@
 """测试 Math_Calculator 的安全算术计算行为。"""
-import pytest 
-from pydantic import ValidationError
 from decimal import Decimal
+
+import pytest
 
 from finscholar.schemas.calculator import CalculatorInput
 from finscholar.tools.math_calculator import (
-    MathCalculator,
     CalculationExecutionError,
+    MathCalculator,
     UnknownVariableError,
-    UnsafeExpressionError
+    UnsafeExpressionError,
 )
 
 # ----------------------------------------------------

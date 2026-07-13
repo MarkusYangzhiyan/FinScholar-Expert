@@ -5,7 +5,7 @@
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal, Self 
+from typing import Literal, Self
 
 from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -55,16 +55,12 @@ class Settings(BaseSettings):
         # 默认读取项目当前目录下的.env
         env_file=str(_find_project_root() / ".env"),
         env_file_encoding="utf-8",
-
         # 环境变量没有统一前缀
         env_prefix="",
-
         # 忽略大小写
         case_sensitive=False,
-
         # .env 中出现未定义字段时直接报错，避免配置拼写错误。
         extra="forbid",
-
         # 允许 .env 中使用 KEY= 表示暂未配置。
         env_ignore_empty=True,
         validate_default=True,
@@ -111,7 +107,6 @@ class Settings(BaseSettings):
     # 重试间隔时间
     http_retry_backoff_seconds: float = Field(default=3, ge=0)
 
-
     # -----------------------------------------------------------------
     # Modelscope 与本地模型
     # -----------------------------------------------------------------
@@ -122,30 +117,18 @@ class Settings(BaseSettings):
 
     qwen_modelscope_id: str = "Qwen/Qwen3.5-4B"
     qwen_modelscope_revision: str | None = None
-    qwen_model_path: Path = Path(
-        "models/pretrained/qwen3.5-4b"
-    )
+    qwen_model_path: Path = Path("models/pretrained/qwen3.5-4b")
 
     bge_m3_modelscope_id: str = "BAAI/bge-m3"
     bge_m3_modelscope_revision: str | None = None
-    embedding_model_path: Path = Path(
-        "models/pretrained/bge-m3"
-    )
+    embedding_model_path: Path = Path("models/pretrained/bge-m3")
 
-    bge_reranker_modelscope_id: str = (
-        "BAAI/bge-reranker-v2-m3"
-    )
+    bge_reranker_modelscope_id: str = "BAAI/bge-reranker-v2-m3"
     bge_reranker_modelscope_revision: str | None = None
-    reranker_model_path: Path = Path(
-        "models/pretrained/bge-reranker-v2-m3"
-    )
+    reranker_model_path: Path = Path("models/pretrained/bge-reranker-v2-m3")
 
     # 微调模型补丁
-    lora_adapter_path: Path = Path(
-        "models/lora/finscholar-router"
-    )
-
-
+    lora_adapter_path: Path = Path("models/lora/finscholar-router")
 
     # ----------------------------------------------------------
     # 本地 Qwen Router
@@ -163,7 +146,6 @@ class Settings(BaseSettings):
         gt=0,
     )
 
-
     # -------------------------------------------------------------
     # DeepSeek-v4 API
     # -------------------------------------------------------------
@@ -175,7 +157,6 @@ class Settings(BaseSettings):
         default=300,
         gt=0,
     )
-
 
     # --------------------------------------------------------------
     # Qwen3.7-plus 视觉 API
@@ -190,7 +171,6 @@ class Settings(BaseSettings):
         gt=0,
     )
 
-
     # ------------------------------------------------------------------
     # LightRAG
     # ------------------------------------------------------------------
@@ -202,18 +182,16 @@ class Settings(BaseSettings):
 
     # 查询模式
     lightrag_query_mode: Literal[
-        "naive",            # 传统RAG - 语义相似度
-        "local",            # 局部图谱 - 提取关键字（实体） - 知识图谱找节点
-        "global",           # 全局图谱 - 社区级总结和关系检索
-        "hybrid",           # 混合图谱 - local+global - 又看节点又看总结摘要
-        "mix",              # 全能模式 - naive+local+global 
+        "naive",  # 传统RAG - 语义相似度
+        "local",  # 局部图谱 - 提取关键字（实体） - 知识图谱找节点
+        "global",  # 全局图谱 - 社区级总结和关系检索
+        "hybrid",  # 混合图谱 - local+global - 又看节点又看总结摘要
+        "mix",  # 全能模式 - naive+local+global
     ] = "mix"
 
     lightrag_llm_backend: Literal["deepseek"] = "deepseek"
 
-    lightrag_vector_storage: Literal[
-        "MilvusVectorDBStorage"
-    ] = "MilvusVectorDBStorage"
+    lightrag_vector_storage: Literal["MilvusVectorDBStorage"] = "MilvusVectorDBStorage"
 
     lightrag_kv_storage: str | None = None
     lightrag_graph_storage: str | None = None
@@ -223,7 +201,6 @@ class Settings(BaseSettings):
         default=120,
         gt=0,
     )
-
 
     # ------------------------------------------------------------------
     # 父子切分与混合检索
@@ -292,15 +269,12 @@ class Settings(BaseSettings):
     embedding_backend: Literal["bge-m3"] = "bge-m3"
     embedding_dimension: Literal[1024] = 1024
 
-    reranker_backend: Literal[
-        "bge-reranker-v2-m3"
-    ] = "bge-reranker-v2-m3"
+    reranker_backend: Literal["bge-reranker-v2-m3"] = "bge-reranker-v2-m3"
 
     dense_top_k: int = Field(default=30, ge=1, le=200)
     sparse_top_k: int = Field(default=30, ge=1, le=200)
     lightrag_top_k: int = Field(default=30, ge=1, le=200)
     rerank_top_k: int = Field(default=10, ge=1, le=100)
-
 
     # ------------------------------------------------------------------
     # Milvus
@@ -321,7 +295,6 @@ class Settings(BaseSettings):
         "L2",
     ] = "COSINE"
 
-
     # ------------------------------------------------------------------
     # 外部工具
     # ------------------------------------------------------------------
@@ -333,10 +306,7 @@ class Settings(BaseSettings):
 
     wikipedia_language: str = "zh"
 
-    wikipedia_user_agent: str = (
-        "FinScholar-Expert/0.1 "
-        "contact=replace-with-email@example.com"
-    )
+    wikipedia_user_agent: str = "FinScholar-Expert/0.1 contact=replace-with-email@example.com"
 
     arxiv_page_size: int = Field(
         default=20,
@@ -426,16 +396,13 @@ class Settings(BaseSettings):
     # 审计日志保留 content_hash、chunk_id 和文档定位信息。
     audit_include_content: bool = False
 
-
     # 当所有的基础字段（如整数是不是正数、字符串有没有拼错）都被 Pydantic 检查完之后，
     # 立刻自动执行这个函数，进行最终的“全局体检和数据加工”
     @model_validator(mode="after")
     def resolve_and_validate(self) -> Self:
         """解析项目路径并校验不会随部署环境变化的架构约束。"""
 
-        root = (
-            self.project_root or _find_project_root()
-        ).expanduser().resolve()
+        root = (self.project_root or _find_project_root()).expanduser().resolve()
 
         self.project_root = root
 
@@ -474,9 +441,9 @@ class Settings(BaseSettings):
 
         return self
 
-# ---------------------------------------
-# 交叉逻辑审查
-# ----------------------------------------
+    # ---------------------------------------
+    # 交叉逻辑审查
+    # ----------------------------------------
 
     def _validate_fixed_architecture(self) -> None:
         """校验项目中不允许通过环境变量改变的安全约束。"""
@@ -487,97 +454,46 @@ class Settings(BaseSettings):
         #     )
 
         if self.sandbox_network_enabled:
-            raise ValueError(
-                "SANDBOX_NETWORK_ENABLED 必须为 false"
-            )
+            raise ValueError("SANDBOX_NETWORK_ENABLED 必须为 false")
 
         if not self.audit_redact_secrets:
-            raise ValueError(
-                "AUDIT_REDACT_SECRETS 必须为 true"
-            )
+            raise ValueError("AUDIT_REDACT_SECRETS 必须为 true")
 
         if self.audit_include_content:
-            raise ValueError(
-                "AUDIT_INCLUDE_CONTENT 必须为 false，"
-                "禁止把完整私有文档写入审计日志"
-            )
+            raise ValueError("AUDIT_INCLUDE_CONTENT 必须为 false，禁止把完整私有文档写入审计日志")
 
     def _validate_chunk_settings(self) -> None:
         """校验 Parent/Child Chunk 参数之间的大小关系。"""
 
         # 父重叠大于父默认
-        if (
-            self.parent_chunk_overlap_tokens
-            >= self.parent_chunk_target_tokens
-        ):
-            raise ValueError(
-                "PARENT_CHUNK_OVERLAP_TOKENS 必须小于 "
-                "PARENT_CHUNK_TARGET_TOKENS"
-            )
+        if self.parent_chunk_overlap_tokens >= self.parent_chunk_target_tokens:
+            raise ValueError("PARENT_CHUNK_OVERLAP_TOKENS 必须小于 PARENT_CHUNK_TARGET_TOKENS")
 
         # 父默认大于父最大
-        if (
-            self.parent_chunk_target_tokens
-            > self.parent_chunk_max_tokens
-        ):
-            raise ValueError(
-                "PARENT_CHUNK_TARGET_TOKENS 不得大于 "
-                "PARENT_CHUNK_MAX_TOKENS"
-            )
+        if self.parent_chunk_target_tokens > self.parent_chunk_max_tokens:
+            raise ValueError("PARENT_CHUNK_TARGET_TOKENS 不得大于 PARENT_CHUNK_MAX_TOKENS")
 
         # 子重叠大于子默认
-        if (
-            self.child_chunk_overlap_tokens
-            >= self.child_chunk_target_tokens
-        ):
-            raise ValueError(
-                "CHILD_CHUNK_OVERLAP_TOKENS 必须小于 "
-                "CHILD_CHUNK_TARGET_TOKENS"
-            )
+        if self.child_chunk_overlap_tokens >= self.child_chunk_target_tokens:
+            raise ValueError("CHILD_CHUNK_OVERLAP_TOKENS 必须小于 CHILD_CHUNK_TARGET_TOKENS")
 
         # 子最小大于子默认
-        if (
-            self.child_chunk_min_tokens
-            > self.child_chunk_target_tokens
-        ):
-            raise ValueError(
-                "CHILD_CHUNK_MIN_TOKENS 不得大于 "
-                "CHILD_CHUNK_TARGET_TOKENS"
-            )
+        if self.child_chunk_min_tokens > self.child_chunk_target_tokens:
+            raise ValueError("CHILD_CHUNK_MIN_TOKENS 不得大于 CHILD_CHUNK_TARGET_TOKENS")
 
         # 子默认大于子最大
-        if (
-            self.child_chunk_target_tokens
-            > self.child_chunk_max_tokens
-        ):
-            raise ValueError(
-                "CHILD_CHUNK_TARGET_TOKENS 不得大于 "
-                "CHILD_CHUNK_MAX_TOKENS"
-            )
+        if self.child_chunk_target_tokens > self.child_chunk_max_tokens:
+            raise ValueError("CHILD_CHUNK_TARGET_TOKENS 不得大于 CHILD_CHUNK_MAX_TOKENS")
 
         # 子最大大于父默认
-        if (
-            self.child_chunk_max_tokens
-            >= self.parent_chunk_target_tokens
-        ):
-            raise ValueError(
-                "CHILD_CHUNK_MAX_TOKENS 必须小于 "
-                "PARENT_CHUNK_TARGET_TOKENS"
-            )
+        if self.child_chunk_max_tokens >= self.parent_chunk_target_tokens:
+            raise ValueError("CHILD_CHUNK_MAX_TOKENS 必须小于 PARENT_CHUNK_TARGET_TOKENS")
 
-        
         if self.parent_context_top_k > self.rerank_top_k:
-            raise ValueError(
-                "PARENT_CONTEXT_TOP_K 不得大于 "
-                "RERANK_TOP_K"
-            )
+            raise ValueError("PARENT_CONTEXT_TOP_K 不得大于 RERANK_TOP_K")
 
-        
         if self.max_children_per_parent > self.rerank_top_k:
-            raise ValueError(
-                "MAX_CHILDREN_PER_PARENT 不得大于 "
-                "RERANK_TOP_K"
-            )
+            raise ValueError("MAX_CHILDREN_PER_PARENT 不得大于 RERANK_TOP_K")
 
     def _validate_production_requirements(self) -> None:
         """生产环境缺少关键服务配置时快速失败。"""
@@ -599,45 +515,26 @@ class Settings(BaseSettings):
         if self.lightrag_enabled:
             required_values.update(
                 {
-                    "LIGHTRAG_KV_STORAGE":
-                        self.lightrag_kv_storage,
-                    "LIGHTRAG_GRAPH_STORAGE":
-                        self.lightrag_graph_storage,
-                    "LIGHTRAG_DOC_STATUS_STORAGE":
-                        self.lightrag_doc_status_storage,
+                    "LIGHTRAG_KV_STORAGE": self.lightrag_kv_storage,
+                    "LIGHTRAG_GRAPH_STORAGE": self.lightrag_graph_storage,
+                    "LIGHTRAG_DOC_STATUS_STORAGE": self.lightrag_doc_status_storage,
                 }
             )
 
-        missing = [
-            name
-            for name, value in required_values.items()
-            if value is None
-        ]
+        missing = [name for name, value in required_values.items() if value is None]
 
         if missing:
             missing_text = ", ".join(sorted(missing))
-            raise ValueError(
-                f"生产环境缺少必需配置：{missing_text}"
-            )
+            raise ValueError(f"生产环境缺少必需配置：{missing_text}")
 
         if not self.audit_enabled:
-            raise ValueError(
-                "生产环境不允许关闭审计功能"
-            )
+            raise ValueError("生产环境不允许关闭审计功能")
 
         if self.log_format != "json":
-            raise ValueError(
-                "生产环境 LOG_FORMAT 必须为 json"
-            )
+            raise ValueError("生产环境 LOG_FORMAT 必须为 json")
 
-        if (
-            "replace-with-email"
-            in self.wikipedia_user_agent
-        ):
-            raise ValueError(
-                "生产环境必须配置真实可识别的 "
-                "WIKIPEDIA_USER_AGENT"
-            )
+        if "replace-with-email" in self.wikipedia_user_agent:
+            raise ValueError("生产环境必须配置真实可识别的 WIKIPEDIA_USER_AGENT")
 
     def _validate_gpu_requirements(self) -> None:
         """开启 GPU 操作后检查本地模型目录。"""
@@ -647,24 +544,16 @@ class Settings(BaseSettings):
 
         required_models = {
             "QWEN_MODEL_PATH": self.qwen_model_path,
-            "EMBEDDING_MODEL_PATH":
-                self.embedding_model_path,
-            "RERANKER_MODEL_PATH":
-                self.reranker_model_path,
+            "EMBEDDING_MODEL_PATH": self.embedding_model_path,
+            "RERANKER_MODEL_PATH": self.reranker_model_path,
         }
 
-        missing = [
-            name
-            for name, path in required_models.items()
-            if not path.is_dir()
-        ]
+        missing = [name for name, path in required_models.items() if not path.is_dir()]
 
         if missing:
             missing_text = ", ".join(sorted(missing))
-            raise ValueError(
-                "GPU 操作已开启，但模型目录不存在："
-                f"{missing_text}"
-            )
+            raise ValueError(f"GPU 操作已开启，但模型目录不存在：{missing_text}")
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
