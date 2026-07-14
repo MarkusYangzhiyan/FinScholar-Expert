@@ -10,9 +10,13 @@ from typing import Literal, Self
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from finscholar.schemas.calculator import CalculatorInput
+from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
+
+
 
 ToolName = Literal[
     "Math_Calculator",
+    "Yahoo_Finance_Tool",
     "Unsupported",
 ]
 
@@ -34,15 +38,44 @@ class RouterDecision(BaseModel):
     # 当 selected_tool 为 Math_Calculator 时必须提供。
     calculator_input: CalculatorInput | None = None
 
+    # 当 selected_tool 为 Yahoo_Finance_Tool 时必须提供。
+    yahoo_finance_input: YahooFinanceHistoryInput | None = None
+
     @model_validator(mode="after")
     def validate_tool_payload(self) -> Self:
-        """校验工具选择与工具参数是否匹配。"""
+        """校验工具选择和工具参数是否匹配。"""
 
-        if self.selected_tool == "Math_Calculator" and self.calculator_input is None:
-            raise ValueError("selected_tool 为 Math_Calculator 时，必须提供 calculator_input")
+        if self.selected_tool == "Math_Calculator":
+            if self.calculator_input is None:
+                raise ValueError(
+                    "选择 Math_Calculator 时必须提供 calculator_input"
+                )
 
-        if self.selected_tool == "Unsupported" and self.calculator_input is not None:
-            raise ValueError("selected_tool 为 Unsupported 时，不得提供 calculator_input")
+            if self.yahoo_finance_input is not None:
+                raise ValueError(
+                    "选择 Math_Calculator 时不得提供 yahoo_finance_input"
+                )
+
+        elif self.selected_tool == "Yahoo_Finance_Tool":
+            if self.yahoo_finance_input is None:
+                raise ValueError(
+                    "选择 Yahoo_Finance_Tool 时必须提供 "
+                    "yahoo_finance_input"
+                )
+
+            if self.calculator_input is not None:
+                raise ValueError(
+                    "选择 Yahoo_Finance_Tool 时不得提供 "
+                    "calculator_input"
+                )
+
+        elif (
+            self.calculator_input is not None
+            or self.yahoo_finance_input is not None
+        ):
+            raise ValueError(
+                "选择 Unsupported 时不得提供任何工具参数"
+            )
 
         return self
 

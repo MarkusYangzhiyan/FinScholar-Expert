@@ -21,7 +21,7 @@ from finscholar.config.reg_patterns import (
 from finscholar.schemas.calculator import CalculatorInput
 from finscholar.schemas.router import RouterDecision, ToolName
 from finscholar.state.agent_state import AgentState
-
+from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 
 class RouterNodeUpdate(TypedDict, total=False):
     """Router Node 写回 AgentState 的局部增量。"""
@@ -34,6 +34,7 @@ class RouterNodeUpdate(TypedDict, total=False):
 
     # Router 会为 Calculator Node 准备这个字段。  from user_query
     calculator_input: dict[str, Any] | None
+    yahoo_finance_input : dict[str,Any] | None
 
 
 def run_router_node(state: AgentState) -> RouterNodeUpdate:
@@ -55,6 +56,7 @@ def run_router_node(state: AgentState) -> RouterNodeUpdate:
         decision = _make_rule_based_decision(
             user_query=user_query,
             existing_calculator_input=state.get("calculator_input"),
+            existing_yahoo_finance_input=state.get("yahoo_finance_input"),
         )
     except RegexPatternConfigError as exc:
         return {
@@ -81,6 +83,7 @@ def run_router_node(state: AgentState) -> RouterNodeUpdate:
 def _make_rule_based_decision(
     user_query: str,
     existing_calculator_input: dict[str, Any] | None,
+    existing_yahoo_finance_input: dict[str, Any] | None,
 ) -> RouterDecision:
     """根据配置化正则规则生成 RouterDecision。
 
@@ -90,6 +93,22 @@ def _make_rule_based_decision(
     3. 如果能识别显式表达式，则生成 Calculator 参数；
     4. 否则返回 Unsupported。
     """
+
+    if existing_yahoo_finance_input is not None:
+        yahoo_finance_input = (
+            YahooFinanceHistoryInput.model_validate(
+                existing_yahoo_finance_input
+            )
+        )
+
+        return RouterDecision(
+            selected_tool="Yahoo_Finance_Tool",
+            reason=(
+                "state 中已存在 yahoo_finance_input，"
+                "Router 校验后选择 Yahoo Finance"
+            ),
+            yahoo_finance_input=yahoo_finance_input,
+        )
 
     if existing_calculator_input is not None:
         calculator_input = CalculatorInput.model_validate(existing_calculator_input)
