@@ -123,19 +123,31 @@ class YahooFinanceClient:
     ) -> list[FinancialDataPoint]:
         """将 Yahoo Close 列转换为标准收盘价数据点。"""
 
-        return [
-            FinancialDataPoint(
-                symbol=query.symbol,
-                metric_name="close_price",
-                value=Decimal(str(value)),
-                currency=raw_result.currency,
-                unit="per_share",
-                as_of_date=pd.Timestamp(index).date(),
-                provider="Yahoo Finance",
-                evidence_id=evidence_id,
+        if raw_result.frame.empty:
+            return []
+        
+        data_points: list[FinancialDataPoint] = []
+
+        for index, value in raw_result.frame["Close"].items():
+            if not isinstance(index, pd.Timestamp):
+                raise TypeError(
+                    "Yahoo 历史行情索引必须是 pandas.Timestamp"
+                )
+
+            data_points.append(
+                FinancialDataPoint(
+                    symbol=query.symbol,
+                    metric_name="close_price",
+                    value=Decimal(str(value)),
+                    currency=raw_result.currency,
+                    unit="per_share",
+                    as_of_date=index.date(),
+                    provider="Yahoo Finance",
+                    evidence_id=evidence_id,
+                )
             )
-            for index, value in raw_result.frame["Close"].items()
-        ]
+
+        return data_points
 
 
 __all__ = [
