@@ -1,5 +1,5 @@
 """
-描述一条标准化金融数据
+描述一条标准化金融数据（yf返回的数据）
 哪个金融标的、哪个指标、数值是多少、币种和单位是什么、属于哪个时间点，并由哪条 Evidence 支持？
 """
 
@@ -14,11 +14,8 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator, field_valida
 class FinancialDataPoint(BaseModel):
     """记录一个具有明确口径、时间和来源的金融数值。"""
     
-    model_config = ConfigDict(
-        extra = "forbid",
-    )
-
-    # 金融标的代码，例如 TSLA。
+    model_config = ConfigDict(extra = "forbid")
+    
     symbol: str
 
     # 标准化指标名称，例如 close_price、volume。
@@ -124,6 +121,7 @@ class FinancialDataPoint(BaseModel):
         has_period_start = self.period_start is not None
         has_period_end = self.period_end is not None
 
+        # 此时has_period_start 和 has_period_end 是 bool 值
         if has_period_start != has_period_end:
             raise ValueError(
                 "period_start 和 period_end 必须同时提供或同时为空"
