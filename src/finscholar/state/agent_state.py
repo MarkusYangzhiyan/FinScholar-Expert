@@ -9,7 +9,7 @@ from typing import Any, TypedDict
 
 from finscholar.schemas.calculator import CalculatorOutput
 from finscholar.schemas.router import RouterDecision, ToolName
-
+from finscholar.schemas.yahoo_finance import YahooFinanceHistoryOutput
 
 class AgentState(TypedDict, total=False):
     """FinScholar Expert 的 LangGraph 主状态。
@@ -38,6 +38,14 @@ class AgentState(TypedDict, total=False):
 
     router_error_message: str | None
 
+    yahoo_finance_input: dict[str, Any] | None
+
+    yahoo_finance_output: YahooFinanceHistoryOutput | None
+
+    yahoo_finance_error_type: str | None
+
+    yahoo_finance_error_message: str | None
+
 
 def create_initial_agent_state(user_query: str) -> AgentState:
     """创建最小 Agent 初始状态。
@@ -56,6 +64,10 @@ def create_initial_agent_state(user_query: str) -> AgentState:
         "router_reason": None,
         "router_error_type": None,
         "router_error_message": None,
+        "yahoo_finance_input": None,
+        "yahoo_finance_output": None,
+        "yahoo_finance_error_type": None,
+        "yahoo_finance_error_message": None,
     }
 
 
