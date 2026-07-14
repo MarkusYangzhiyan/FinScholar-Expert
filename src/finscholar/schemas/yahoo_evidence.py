@@ -1,11 +1,12 @@
+"""
+描述这条数据从哪里来、什么时候取得、原始内容是什么、之后如何验证它没有被修改？
+"""
+
 from datetime import UTC, datetime
 from uuid import UUID
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator
 
-"""
-描述这条数据从哪里来、什么时候取得、原始内容是什么、之后如何验证它没有被修改？
-"""
 
 
 class Evidence(BaseModel):
@@ -13,7 +14,7 @@ class Evidence(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    # 证据唯一标识，供金融数据点引用。
+    # 证据唯一标识
     evidence_id: UUID
 
     # 来源类型，例如 market_data、web、document。
