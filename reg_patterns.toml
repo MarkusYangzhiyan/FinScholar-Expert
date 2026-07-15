@@ -21,3 +21,4 @@ ignore_case = true
 [router.unit]
 pattern = '(?:unit|单位)\s*(?:=|:|：)\s*(?P<unit>[^\s,，;；]+)'
 ignore_case = true
+

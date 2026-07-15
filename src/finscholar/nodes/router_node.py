@@ -94,6 +94,7 @@ def _make_rule_based_decision(
     4. 否则返回 Unsupported。
     """
 
+
     if existing_yahoo_finance_input is not None:
         yahoo_finance_input = (
             YahooFinanceHistoryInput.model_validate(
@@ -239,10 +240,16 @@ def _decision_to_update(decision: RouterDecision) -> RouterNodeUpdate:
     """将 RouterDecision 转换为 AgentState 局部更新。"""
 
     calculator_input = None
+    yahoo_finance_input = None
 
     if decision.calculator_input is not None:
         # 使用 json 模式，让写入 state 的 calculator_input 更接近模型工具调用参数。
         calculator_input = decision.calculator_input.model_dump(mode="json")
+
+    if decision.yahoo_finance_input is not None:
+        yahoo_finance_input = (
+            decision.yahoo_finance_input.model_dump(mode="json")
+        )
 
     return {
         "router_selected_tool": decision.selected_tool,
@@ -251,7 +258,9 @@ def _decision_to_update(decision: RouterDecision) -> RouterNodeUpdate:
         "router_error_type": None,
         "router_error_message": None,
         "calculator_input": calculator_input,
+        "yahoo_finance_input": yahoo_finance_input,
     }
+
 
 
 __all__ = [

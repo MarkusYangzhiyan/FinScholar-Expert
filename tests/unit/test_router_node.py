@@ -124,3 +124,34 @@ def test_router_node_handles_invalid_existing_calculator_input() -> None:
     assert result["calculator_input"] is None
     assert result["router_error_type"] == "RouterInputValidationError"
     assert "expression" in result["router_error_message"]
+
+
+def test_router_node_uses_existing_yahoo_finance_input() -> None:
+    """已有 Yahoo 参数时应选择 Yahoo Finance Tool。"""
+
+    result = run_router_node(
+        {
+            "user_query": "查询 TSLA 最近一个月的行情",
+            "yahoo_finance_input": {
+                "symbol": " tsla ",
+                "period": "1mo",
+                "interval": "1d",
+            },
+        }
+    )
+
+    assert (
+        result["router_selected_tool"]
+        == "Yahoo_Finance_Tool"
+    )
+    assert result["router_decision"] is not None
+    assert result["calculator_input"] is None
+
+    yahoo_input = result["yahoo_finance_input"]
+
+    assert yahoo_input is not None
+    assert yahoo_input["symbol"] == "TSLA"
+    assert yahoo_input["period"] == "1mo"
+    assert yahoo_input["interval"] == "1d"
+    assert yahoo_input["auto_adjust"] is False
+    assert result["router_error_type"] is None
