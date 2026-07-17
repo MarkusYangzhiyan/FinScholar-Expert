@@ -134,14 +134,14 @@ class Settings(BaseSettings):
     # 本地 Qwen Router
     # ----------------------------------------------------------
 
-    router_backend: Literal["vllm"] = "vllm"
+    router_backend: Literal["vllm", "deepseek"] = "deepseek"
     # vLLM 在本地 8000 端口提供 OpenAI 兼容接口。
     qwen_base_url: str = "http://127.0.0.1:8000/v1"
     # 本地服务无需真实密钥，EMPTY 用于满足客户端的非空校验。
     qwen_api_key: SecretStr = SecretStr("EMPTY")
     qwen_model: str = "qwen-router"
     qwen_enable_thinking: bool = False
-   
+
     # Qwen 请求建立连接以后，等待请求发送和模型响应的超时配置
     qwen_request_timeout_seconds: float = Field(
         default=30,
@@ -153,8 +153,9 @@ class Settings(BaseSettings):
     # -------------------------------------------------------------
 
     deepseek_api_key: SecretStr | None = None
-    deepseek_base_url: str | None = None
-    deepseek_model: str | None = None
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-v4-flash"
+    deepseek_router_thinking_enabled: bool = False
     deepseek_request_timeout_seconds: float = Field(
         default=300,
         gt=0,
@@ -440,12 +441,21 @@ class Settings(BaseSettings):
         self._validate_chunk_settings()
         self._validate_production_requirements()
         self._validate_gpu_requirements()
+        self._validate_router_settings()
 
         return self
 
     # ---------------------------------------
     # 交叉逻辑审查
     # ----------------------------------------
+    def _validate_router_settings(self) -> None:
+        """校验当前 Router 后端需要的配置。"""
+
+        if self.router_backend != "deepseek":
+            return
+
+        if self.deepseek_api_key is None or not self.deepseek_api_key.get_secret_value().strip():
+            raise ValueError("ROUTER_BACKEND=deepseek 时必须配置 DEEPSEEK_API_KEY")
 
     def _validate_fixed_architecture(self) -> None:
         """校验项目中不允许通过环境变量改变的安全约束。"""
