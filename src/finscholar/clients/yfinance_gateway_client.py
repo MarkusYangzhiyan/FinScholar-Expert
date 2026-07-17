@@ -6,7 +6,7 @@ from typing import Protocol, TypeAlias, cast
 import pandas as pd
 import yfinance as yf
 
-from finscholar.clients.yahoo_finance import YahooHistoryRawResult
+from finscholar.clients.yahoo_finance_client import YahooHistoryRawResult
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 
 # 这里只声明接口，具体代码由实际对象提供
