@@ -35,17 +35,25 @@ class RouterClientError(RuntimeError):
 
 # 连接失败、超时、vLLM 服务异常
 class RouterServiceError(RouterClientError):
-    """Qwen/vLLM 服务请求失败。"""
+    """路由模型服务请求失败。"""
 
 
 # 模型没有调用工具、调用多个工具、参数 JSON 错误
 class RouterResponseError(RouterClientError):
-    """Qwen 返回内容无法转换成 RouterDecision。"""
+    """路由模型响应无法转换成 RouterDecision。"""
 
+
+class ManagedRouterClient(RouterClient,Protocol):
+    """定义 Runtime 管理的 Router Client。"""
+    
+    async def close(self) -> None:
+        """关闭底层网络连接。"""
+        ...
 
 __all__ = [
     "RouterClient",
     "RouterClientError",
     "RouterResponseError",
     "RouterServiceError",
+    "ManagedRouterClient"
 ]
