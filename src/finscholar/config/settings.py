@@ -98,7 +98,7 @@ class Settings(BaseSettings):
     # -----------------------------------------------------
     # 统一网络策略
     # -----------------------------------------------------
-    # 连接超时
+    # 建立http连接超时
     http_connect_timeout_seconds: float = Field(default=10, gt=0)
     # 读取超时
     http_read_timeout_seconds: float = Field(default=60, gt=0)
@@ -141,6 +141,8 @@ class Settings(BaseSettings):
     qwen_api_key: SecretStr = SecretStr("EMPTY")
     qwen_model: str = "qwen-router"
     qwen_enable_thinking: bool = False
+   
+    # Qwen 请求建立连接以后，等待请求发送和模型响应的超时配置
     qwen_request_timeout_seconds: float = Field(
         default=30,
         gt=0,
