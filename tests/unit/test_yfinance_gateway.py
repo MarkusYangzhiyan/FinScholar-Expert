@@ -2,9 +2,9 @@
 
 import pandas as pd
 
-from finscholar.clients.yfinance_gateway import YFinanceHistoryGateway
+from finscholar.clients.yfinance_gateway_client import YFinanceHistoryGateway
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
-from finscholar.clients.yahoo_finance import YahooHistoryRawResult, YahooFinanceClient
+from finscholar.clients.yahoo_finance_client import YahooHistoryRawResult, YahooFinanceClient
 
 class FakeTicker:
     """模拟 yf.Ticker，不访问网络。"""

@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from finscholar.clients.yahoo_finance import (
+from finscholar.clients.yahoo_finance_client import (
     YahooFinanceClient,
     YahooHistoryRawResult,
 )
