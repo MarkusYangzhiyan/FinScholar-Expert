@@ -5,7 +5,7 @@ Yahoo finance 历史行情数据输入输出的数据契约协议
 
 from typing import Literal, TypeAlias, Self
 
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator, Field
 from finscholar.schemas.yahoo_evidence import Evidence
 from finscholar.schemas.financial_data import FinancialDataPoint
 
@@ -62,7 +62,10 @@ class YahooFinanceHistoryInput(BaseModel):
     symbol: str
     period: YahooHistoryPeriod = "1mo"
     interval: YahooHistoryInterval = "1d"
-    auto_adjust: bool = False
+    auto_adjust: bool = Field(
+        default = False,
+        description = ("是否自动复权；只有用户明确要求复权价格时,才设为 true，用户未说明时必须为 false")
+    )
 
     @field_validator("symbol")
     @classmethod
