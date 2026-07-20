@@ -7,6 +7,7 @@
 具体实现可以是：
 RouterClient
 ├── QwenRouterClient
+├── DeepSeekRouterClient
 ├── FakeRouterClient
 └── 未来的其他模型Client
 
@@ -43,7 +44,7 @@ class RouterResponseError(RouterClientError):
     """路由模型响应无法转换成 RouterDecision。"""
 
 
-class ManagedRouterClient(RouterClient,Protocol):
+class ManagedRouterClient(RouterClient, Protocol):
     """定义 Runtime 管理的 Router Client。"""
     
     async def close(self) -> None:
@@ -51,9 +52,10 @@ class ManagedRouterClient(RouterClient,Protocol):
         ...
 
 __all__ = [
+    "ManagedRouterClient",
     "RouterClient",
     "RouterClientError",
     "RouterResponseError",
     "RouterServiceError",
-    "ManagedRouterClient"
+    
 ]

@@ -3,15 +3,16 @@ from typing import Self
 
 from langgraph.graph.state import CompiledStateGraph
 
+from finscholar.clients.deepseek_router_client import DeepSeekRouterClient
 from finscholar.clients.qwen_router_client import QwenRouterClient
+from finscholar.clients.router_client import ManagedRouterClient
 from finscholar.clients.yahoo_finance_client import YahooFinanceClient
 from finscholar.clients.yfinance_gateway_client import YFinanceHistoryGateway
 from finscholar.config.settings import Settings
 from finscholar.graph.agent_graph import build_agent_graph, invoke_agent_graph
 from finscholar.state.agent_state import AgentState
 from finscholar.tools.yahoo_finance import YahooFinanceTool
-from finscholar.clients.router_client import ManagedRouterClient
-from finscholar.clients.deepseek_router_client import DeepSeekRouterClient
+
 
 @dataclass(slots=True)
 class AgentRuntime:
@@ -26,8 +27,11 @@ class AgentRuntime:
 
         if settings.router_backend == "vllm":
             router_client = QwenRouterClient.from_settings(settings)
-        else:
+        elif settings.router_backend == "deepseek":
             router_client = DeepSeekRouterClient.from_settings(settings)
+
+        else:
+            raise ValueError(f"不支持的 Router 后端：{settings.router_backend}")
 
         yahoo_gateway = YFinanceHistoryGateway(
             timeout_seconds=(settings.yfinance_request_timeout_seconds)
