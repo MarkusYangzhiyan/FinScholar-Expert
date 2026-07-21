@@ -6,7 +6,7 @@ Router 负责根据用户问题选择后续工具。
 """
 
 from typing import Literal, Self
-
+from uuid import UUID, uuid4
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from finscholar.schemas.calculator import CalculatorInput
@@ -18,6 +18,12 @@ ToolName = Literal[
     "Math_Calculator",
     "Yahoo_Finance_Tool",
     "Unsupported",
+]
+
+RouterBatchStatus = Literal[
+    "execute",                  # 执行action中的工具
+    "finalize",                 # 证据足够，进入最终答案生成
+    "unsupported"               # 当前系统无法安全处理
 ]
 
 
@@ -78,9 +84,51 @@ class RouterDecision(BaseModel):
             )
 
         return self
+    
+
+class RouterAction(RouterDecision):
+    """当前轮需要执行的一次具体工具调用"""
+
+    action_id : UUID = Field(default_factory = uuid4)
+
+class RouterBatch(BaseModel):
+    """Router 为当前执行轮次生成的工具批次。"""
+
+    model_config = ConfigDict(extra = "forbid")
+
+    status : RouterBatchStatus
+
+    reason : str  = Field(min_length = 1, max_length = 500)
+
+    actions : list[RouterAction] = Field(default_factory = list,max_length = 7)
+
+    @model_validator(mode = 'after')
+    def validate_batch(self) -> Self:
+        """校验批次状态与工具调用是否匹配。"""
+
+        if self.status == "execute":
+            if not self.actions:
+                raise ValueError("execute 状态必须至少包含一个 action")
+            
+            if any(action.selected_tool == 'Unsupported' for action in self.actions):
+                raise ValueError("execute 状态不得包含 Unsupported")
+            
+        elif self.actions:
+            raise ValueError("finalize 或 unsupported 状态不得包含 action")
+
+        action_ids = [action.action_id for action in self.actions]
+
+        if len(action_ids) != len(set(action_ids)):
+            raise ValueError("同一个批次中的 action_id 不得重复")
+    
+        return self 
+
 
 
 __all__ = [
+    "RouterAction",
+    "RouterBatch",
+    "RouterBatchStatus",
     "RouterDecision",
     "ToolName",
 ]
