@@ -82,9 +82,7 @@ def test_evidence_rejects_unknown_fields() -> None:
                 "evidence_id": UUID("83882c28-a9c7-45c8-bac8-77139a0cd16a"),
                 "source_type": "market_data",
                 "source_name": "Yahoo Finance",
-                "source_uri": (
-                    "https://query2.finance.yahoo.com/v8/finance/chart/TSLA"
-                ),
+                "source_uri": ("https://query2.finance.yahoo.com/v8/finance/chart/TSLA"),
                 "retrieved_at": datetime(
                     2026,
                     7,

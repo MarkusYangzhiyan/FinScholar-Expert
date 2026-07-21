@@ -37,9 +37,7 @@ class FakeYahooHistoryGateway:
 async def test_yahoo_finance_tool_returns_history_output() -> None:
     """Tool 应调用 Client 并返回标准历史行情结果。"""
 
-    client = YahooFinanceClient(
-        gateway=FakeYahooHistoryGateway()
-    )
+    client = YahooFinanceClient(gateway=FakeYahooHistoryGateway())
     tool = YahooFinanceTool(client=client)
     query = YahooFinanceHistoryInput(
         symbol="TSLA",

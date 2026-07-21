@@ -6,6 +6,7 @@ from finscholar.clients.yfinance_gateway_client import YFinanceHistoryGateway
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 from finscholar.clients.yahoo_finance_client import YahooHistoryRawResult, YahooFinanceClient
 
+
 class FakeTicker:
     """模拟 yf.Ticker，不访问网络。"""
 
@@ -92,6 +93,7 @@ def test_gateway_forwards_history_query_to_yfinance() -> None:
     pd.testing.assert_frame_equal(result.frame, frame)
     assert result.currency == "USD"
 
+
 class EmptyYahooHistoryGateway:
     """模拟 Yahoo 返回空历史行情。"""
 
@@ -108,9 +110,7 @@ class EmptyYahooHistoryGateway:
 async def test_client_returns_empty_data_points_for_empty_history() -> None:
     """Yahoo 返回空行情时，应明确返回空数据点列表。"""
 
-    client = YahooFinanceClient(
-        gateway=EmptyYahooHistoryGateway()
-    )
+    client = YahooFinanceClient(gateway=EmptyYahooHistoryGateway())
     query = YahooFinanceHistoryInput(
         symbol="TSLA",
         period="1mo",

@@ -27,15 +27,10 @@ def _make_output() -> YahooFinanceHistoryOutput:
     )
 
     evidence = Evidence(
-        evidence_id=UUID(
-            "a60ee325-aea0-49b3-b23d-cc06d8ae54a2"
-        ),
+        evidence_id=UUID("a60ee325-aea0-49b3-b23d-cc06d8ae54a2"),
         source_type="market_data",
         source_name="Yahoo Finance",
-        source_uri=(
-            "https://query2.finance.yahoo.com/v8/"
-            "finance/chart/TSLA"
-        ),
+        source_uri=("https://query2.finance.yahoo.com/v8/finance/chart/TSLA"),
         retrieved_at=datetime(2026, 7, 14, tzinfo=UTC),
         content='{"currency":"USD","rows":[]}',
         content_hash="a" * 64,
@@ -136,9 +131,7 @@ async def test_node_rejects_invalid_input(
 async def test_node_records_upstream_failure() -> None:
     """上游失败应写入 State，而不是导致工作流崩溃。"""
 
-    tool = YahooFinanceTool(
-        client=FailingYahooHistoryClient()
-    )
+    tool = YahooFinanceTool(client=FailingYahooHistoryClient())
     state: AgentState = {
         "yahoo_finance_input": {
             "symbol": "TSLA",
@@ -151,7 +144,4 @@ async def test_node_records_upstream_failure() -> None:
 
     assert update["yahoo_finance_output"] is None
     assert update["yahoo_finance_error_type"] == "TimeoutError"
-    assert (
-        update["yahoo_finance_error_message"]
-        == "Yahoo Finance 请求超时"
-    )
+    assert update["yahoo_finance_error_message"] == "Yahoo Finance 请求超时"

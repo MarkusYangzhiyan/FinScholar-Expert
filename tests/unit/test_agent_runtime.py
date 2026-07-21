@@ -5,10 +5,10 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from finscholar.clients.deepseek_router_client import (
+from finscholar.clients.client_deepseek_router import (
     DeepSeekRouterClient,
 )
-from finscholar.clients.qwen_router_client import (
+from finscholar.clients.client_qwen_router import (
     QwenRouterClient,
 )
 from finscholar.runtime.agent_runtime import AgentRuntime
@@ -52,25 +52,17 @@ def test_agent_runtime_selects_router_backend(
             return_value=deepseek_client,
         ) as deepseek_factory,
         patch(
-            "finscholar.runtime.agent_runtime."
-            "build_agent_graph",
+            "finscholar.runtime.agent_runtime.build_agent_graph",
             return_value=compiled_graph,
         ) as build_graph,
     ):
         runtime = AgentRuntime.from_settings(settings)
 
-    expected_client = (
-        qwen_client
-        if expected_client_name == "qwen"
-        else deepseek_client
-    )
+    expected_client = qwen_client if expected_client_name == "qwen" else deepseek_client
 
     assert runtime._router_client is expected_client
     assert runtime._compiled_graph is compiled_graph
-    assert (
-        build_graph.call_args.kwargs["router_client"]
-        is expected_client
-    )
+    assert build_graph.call_args.kwargs["router_client"] is expected_client
 
     if backend == "vllm":
         qwen_factory.assert_called_once_with(settings)

@@ -37,9 +37,7 @@ def test_financial_data_point_accepts_tsla_close_price() -> None:
     assert data_point.period_end is None
     assert data_point.as_of_date == date(2026, 7, 10)
     assert data_point.provider == "Yahoo Finance"
-    assert data_point.evidence_id == UUID(
-        "d50e140e-f8ab-41eb-8de0-8e6a1c7ca268"
-    )
+    assert data_point.evidence_id == UUID("d50e140e-f8ab-41eb-8de0-8e6a1c7ca268")
 
 
 def test_financial_data_point_rejects_float_value() -> None:
@@ -58,9 +56,7 @@ def test_financial_data_point_rejects_float_value() -> None:
                 "period_end": None,
                 "as_of_date": date(2026, 7, 10),
                 "provider": "Yahoo Finance",
-                "evidence_id": UUID(
-                    "468a9ce4-211f-47be-910b-6577d024bded"
-                ),
+                "evidence_id": UUID("468a9ce4-211f-47be-910b-6577d024bded"),
             }
         )
 
@@ -80,12 +76,11 @@ def test_financial_data_point_rejects_unknown_fields() -> None:
                 "period_end": None,
                 "as_of_date": date(2026, 7, 10),
                 "provider": "Yahoo Finance",
-                "evidence_id": UUID(
-                    "fb531b0d-f4ac-4cbb-a0dc-d43fd2e8033a"
-                ),
+                "evidence_id": UUID("fb531b0d-f4ac-4cbb-a0dc-d43fd2e8033a"),
                 "unexpected_field": "不应被接受",
             }
         )
+
 
 def test_financial_data_point_requires_time_context() -> None:
     """金融数据必须包含时点日期或报告期间。"""
@@ -101,10 +96,9 @@ def test_financial_data_point_requires_time_context() -> None:
             period_end=None,
             as_of_date=None,
             provider="Yahoo Finance",
-            evidence_id=UUID(
-                "0b008122-c796-43ec-bc20-287115be018d"
-            ),
+            evidence_id=UUID("0b008122-c796-43ec-bc20-287115be018d"),
         )
+
 
 @pytest.mark.parametrize(
     ("period_start", "period_end"),
@@ -133,9 +127,7 @@ def test_financial_data_point_requires_complete_period(
             period_end=period_end,
             as_of_date=None,
             provider="Yahoo Finance",
-            evidence_id=UUID(
-                "30fa3061-e6d5-490b-b686-64d37929334e"
-            ),
+            evidence_id=UUID("30fa3061-e6d5-490b-b686-64d37929334e"),
         )
 
 
@@ -155,10 +147,9 @@ def test_financial_data_point_rejects_reversed_period() -> None:
             period_end=date(2026, 3, 31),
             as_of_date=None,
             provider="Yahoo Finance",
-            evidence_id=UUID(
-                "61690eef-f458-4a75-9c3d-f3d764ae6db1"
-            ),
+            evidence_id=UUID("61690eef-f458-4a75-9c3d-f3d764ae6db1"),
         )
+
 
 def test_point_in_time_data_allows_omitting_period_and_currency() -> None:
     """成交量等时点型指标应允许省略币种和报告期间。"""
@@ -170,14 +161,13 @@ def test_point_in_time_data_allows_omitting_period_and_currency() -> None:
         unit="shares",
         as_of_date=date(2026, 7, 10),
         provider="Yahoo Finance",
-        evidence_id=UUID(
-            "08e5ecbd-210f-423c-b8bf-09ff982ce61c"
-        ),
+        evidence_id=UUID("08e5ecbd-210f-423c-b8bf-09ff982ce61c"),
     )
 
     assert data_point.currency is None
     assert data_point.period_start is None
     assert data_point.period_end is None
+
 
 def test_period_data_allows_omitting_as_of_date() -> None:
     """期间型指标具有完整报告期时应允许省略 as_of_date。"""
@@ -191,9 +181,7 @@ def test_period_data_allows_omitting_as_of_date() -> None:
         period_start=date(2026, 1, 1),
         period_end=date(2026, 3, 31),
         provider="Yahoo Finance",
-        evidence_id=UUID(
-            "0390bee3-15ad-4450-bbd2-29a704c7a0e1"
-        ),
+        evidence_id=UUID("0390bee3-15ad-4450-bbd2-29a704c7a0e1"),
     )
 
     assert data_point.as_of_date is None
@@ -209,9 +197,7 @@ def test_financial_data_point_normalizes_symbol() -> None:
         unit="per_share",
         as_of_date=date(2026, 7, 10),
         provider="Yahoo Finance",
-        evidence_id=UUID(
-            "f4efb8b2-fd70-4a85-925e-7fa33f9ae6ed"
-        ),
+        evidence_id=UUID("f4efb8b2-fd70-4a85-925e-7fa33f9ae6ed"),
     )
 
     assert data_point.symbol == "TSLA"
@@ -229,10 +215,9 @@ def test_financial_data_point_rejects_blank_symbol() -> None:
             unit="per_share",
             as_of_date=date(2026, 7, 10),
             provider="Yahoo Finance",
-            evidence_id=UUID(
-                "3ef7f7a3-a4f0-443d-a063-de9e8245b48e"
-            ),
+            evidence_id=UUID("3ef7f7a3-a4f0-443d-a063-de9e8245b48e"),
         )
+
 
 def test_financial_data_point_normalizes_descriptive_fields() -> None:
     """指标名、单位、币种和提供方应使用规范化格式。"""
@@ -245,9 +230,7 @@ def test_financial_data_point_normalizes_descriptive_fields() -> None:
         unit=" Per_Share ",
         as_of_date=date(2026, 7, 10),
         provider=" Yahoo Finance ",
-        evidence_id=UUID(
-            "8d9ad65e-e2e3-495c-8c7d-439604d074c9"
-        ),
+        evidence_id=UUID("8d9ad65e-e2e3-495c-8c7d-439604d074c9"),
     )
 
     assert data_point.metric_name == "close_price"
@@ -279,12 +262,9 @@ def test_financial_data_point_rejects_blank_descriptive_fields(
         "unit": "per_share",
         "as_of_date": date(2026, 7, 10),
         "provider": "Yahoo Finance",
-        "evidence_id": UUID(
-            "0463d0c9-64aa-4915-9d5b-f28f4e26a297"
-        ),
+        "evidence_id": UUID("0463d0c9-64aa-4915-9d5b-f28f4e26a297"),
     }
     input_data[field_name] = blank_value
 
     with pytest.raises(ValidationError, match=field_name):
         FinancialDataPoint.model_validate(input_data)
-

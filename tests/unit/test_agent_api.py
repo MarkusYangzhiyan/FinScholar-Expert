@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from finscholar.main import create_app
 from finscholar.state.agent_state import create_initial_agent_state
 
+
 def test_agent_query_uses_shared_runtime() -> None:
     """应用应复用 lifespan 创建的 Runtime 并返回结构化响应。"""
 
@@ -14,9 +15,7 @@ def test_agent_query_uses_shared_runtime() -> None:
     runtime = Mock()
 
     runtime.invoke = AsyncMock(
-        side_effect=lambda user_query: create_initial_agent_state(
-            user_query
-        )
+        side_effect=lambda user_query: create_initial_agent_state(user_query)
     )
     runtime.close = AsyncMock()
 

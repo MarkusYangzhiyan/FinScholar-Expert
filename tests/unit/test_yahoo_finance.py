@@ -1,9 +1,10 @@
 """测试 Yahoo Finance 工具的数据契约。"""
+
 from uuid import UUID
 import pytest
 from pydantic import ValidationError
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
-from datetime import datetime, UTC, date 
+from datetime import datetime, UTC, date
 from finscholar.schemas.financial_data import FinancialDataPoint
 from finscholar.schemas.yahoo_evidence import Evidence
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput, YahooFinanceHistoryOutput
@@ -40,6 +41,7 @@ def _make_close_price(evidence_id: UUID) -> FinancialDataPoint:
         evidence_id=evidence_id,
     )
 
+
 def test_history_input_accepts_period_query() -> None:
     """历史行情输入应接受 period + interval 查询。"""
 
@@ -67,7 +69,6 @@ def test_history_input_rejects_unsupported_query_values(
     invalid_value: str,
 ) -> None:
     """历史行情输入应拒绝 Yahoo Finance 不支持的查询值。"""
-
 
     input_data: dict[str, object] = {
         "symbol": "TSLA",
@@ -109,9 +110,5 @@ def test_history_output_rejects_unlinked_evidence() -> None:
         YahooFinanceHistoryOutput(
             query=YahooFinanceHistoryInput(symbol="TSLA"),
             evidence=_make_history_evidence(),
-            data_points=[
-                _make_close_price(
-                    UUID("704d269e-4161-483a-b7d5-b49975579462")
-                )
-            ],
+            data_points=[_make_close_price(UUID("704d269e-4161-483a-b7d5-b49975579462"))],
         )

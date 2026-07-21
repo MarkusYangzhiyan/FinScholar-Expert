@@ -14,6 +14,7 @@ from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 from finscholar.tools.yahoo_finance import YahooFinanceTool
 from finscholar.schemas.calculator import CalculatorInput
 
+
 class FakeRouterClient:
     """返回固定的 Yahoo Finance 路由决策。"""
 
@@ -32,6 +33,7 @@ class FakeRouterClient:
                 interval="1d",
             ),
         )
+
 
 class FakeCalculatorRouterClient:
     """返回固定的 Calculator 路由决策。"""
@@ -52,6 +54,7 @@ class FakeCalculatorRouterClient:
                 expression="1 + 2 * 3",
             ),
         )
+
 
 class FakeYahooHistoryGateway:
     """返回固定行情，不访问真实网络。"""
