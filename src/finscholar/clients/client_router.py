@@ -15,14 +15,14 @@ RouterClient
 
 from typing import Protocol
 
-from finscholar.schemas.schemas_router import RouterDecision
+from finscholar.schemas.schemas_router import RouterBatch, RouterContext
 
 
 class RouterClient(Protocol):
     async def route(
         self,
-        user_query: str,
-    ) -> RouterDecision:
+        context: RouterContext,
+    ) -> RouterBatch:
         """
         将 用户问题 转化成 结构化路由决策
         """
@@ -41,7 +41,7 @@ class RouterServiceError(RouterClientError):
 
 # 模型没有调用工具、调用多个工具、参数 JSON 错误
 class RouterResponseError(RouterClientError):
-    """路由模型响应无法转换成 RouterDecision。"""
+    """路由模型响应无法转换成合法 RouterBatch。 """
 
 
 class ManagedRouterClient(RouterClient, Protocol):
