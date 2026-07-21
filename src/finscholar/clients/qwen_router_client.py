@@ -11,7 +11,7 @@ from typing import Self
 import httpx
 from openai import APIError, AsyncOpenAI
 
-from finscholar.clients.router_client import RouterResponseError, RouterServiceError
+from finscholar.clients.client_router import RouterResponseError, RouterServiceError
 from finscholar.config.settings import Settings
 from finscholar.routing.router_function_calling import (
     ROUTER_SYSTEM_PROMPT,

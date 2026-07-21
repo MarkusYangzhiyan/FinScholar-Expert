@@ -3,7 +3,7 @@ import asyncio
 from typing import Any
 from finscholar.config.settings import get_settings
 from finscholar.clients.deepseek_router_client import DeepSeekRouterClient
-from finscholar.clients.router_client import RouterClientError
+from finscholar.clients.client_router import RouterClientError
 
 
 

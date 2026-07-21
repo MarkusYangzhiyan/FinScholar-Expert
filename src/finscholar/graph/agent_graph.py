@@ -5,7 +5,7 @@ from typing import cast
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
-from finscholar.clients.router_client import RouterClient
+from finscholar.clients.client_router import RouterClient
 from finscholar.nodes.calculator_node import run_calculator_node
 from finscholar.nodes.router_node import RouterNodeUpdate, run_router_node
 from finscholar.nodes.yahoo_finance_node import (
