@@ -18,7 +18,7 @@ from finscholar.routing.router_function_calling import (
     ROUTER_TOOLS,
     parse_router_tool_call,
 )
-from finscholar.schemas.router import RouterDecision
+from finscholar.schemas.schemas_router import RouterDecision
 
 
 class QwenRouterClient:

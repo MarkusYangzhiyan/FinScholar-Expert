@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 
 from finscholar.clients.router_client import RouterResponseError
 from finscholar.schemas.calculator import CalculatorInput
-from finscholar.schemas.router import RouterDecision
+from finscholar.schemas.schemas_router import RouterDecision
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 
 ROUTER_SYSTEM_PROMPT = """

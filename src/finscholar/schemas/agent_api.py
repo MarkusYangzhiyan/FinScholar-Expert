@@ -10,7 +10,7 @@ from pydantic import (
 )
 
 from finscholar.schemas.calculator import CalculatorOutput
-from finscholar.schemas.router import RouterDecision
+from finscholar.schemas.schemas_router import RouterDecision
 from finscholar.schemas.yahoo_finance import (
     YahooFinanceHistoryOutput,
 )

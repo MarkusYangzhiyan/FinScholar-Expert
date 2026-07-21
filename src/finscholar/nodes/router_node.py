@@ -5,7 +5,7 @@
 from typing import Any, TypedDict
 
 from finscholar.clients.router_client import RouterClient, RouterClientError
-from finscholar.schemas.router import RouterDecision, ToolName
+from finscholar.schemas.schemas_router import RouterDecision, ToolName
 from finscholar.state.agent_state import AgentState
 
 

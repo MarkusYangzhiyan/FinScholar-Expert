@@ -1,7 +1,7 @@
 """测试 Router Node 的主要路由链路。"""
 
 from finscholar.nodes.router_node import run_router_node
-from finscholar.schemas.router import RouterDecision
+from finscholar.schemas.schemas_router import RouterDecision
 from finscholar.schemas.yahoo_finance import (
     YahooFinanceHistoryInput,
 )

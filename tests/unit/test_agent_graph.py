@@ -9,7 +9,7 @@ from finscholar.clients.yahoo_finance_client import (
     YahooHistoryRawResult,
 )
 from finscholar.graph.agent_graph import build_agent_graph, invoke_agent_graph
-from finscholar.schemas.router import RouterDecision
+from finscholar.schemas.schemas_router import RouterDecision
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 from finscholar.tools.yahoo_finance import YahooFinanceTool
 from finscholar.schemas.calculator import CalculatorInput

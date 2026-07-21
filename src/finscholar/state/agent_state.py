@@ -8,7 +8,7 @@
 from typing import Any, TypedDict
 
 from finscholar.schemas.calculator import CalculatorOutput
-from finscholar.schemas.router import RouterDecision, ToolName
+from finscholar.schemas.schemas_router import RouterDecision, ToolName
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryOutput
 
 class AgentState(TypedDict, total=False):

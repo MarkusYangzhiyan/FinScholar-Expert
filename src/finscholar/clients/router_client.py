@@ -15,7 +15,7 @@ RouterClient
 
 from typing import Protocol
 
-from finscholar.schemas.router import RouterDecision
+from finscholar.schemas.schemas_router import RouterDecision
 
 
 class RouterClient(Protocol):
