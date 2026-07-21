@@ -51,21 +51,15 @@ def build_agent_query_response(
     _append_error(
         errors,
         stage="yahoo_finance",
-        error_type=state.get(
-            "yahoo_finance_error_type"
-        ),
-        message=state.get(
-            "yahoo_finance_error_message"
-        ),
+        error_type=state.get("yahoo_finance_error_type"),
+        message=state.get("yahoo_finance_error_message"),
     )
 
     return AgentQueryResponse(
         user_query=state["user_query"],
         router_decision=state.get("router_decision"),
         calculator_output=state.get("calculator_output"),
-        yahoo_finance_output=state.get(
-            "yahoo_finance_output"
-        ),
+        yahoo_finance_output=state.get("yahoo_finance_output"),
         errors=errors,
     )
 

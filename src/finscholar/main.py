@@ -22,6 +22,7 @@ yield 之后：应用关闭
 
 """
 
+
 # 服务真正启动时，进入 lifespan(app)
 @asynccontextmanager
 async def lifespan(
@@ -51,9 +52,9 @@ def create_app() -> FastAPI:
     application = FastAPI(
         title="FinScholar Expert API",
         version="0.1.0",
-        lifespan=lifespan,  
+        lifespan=lifespan,
     )
-    
+
     # 注册 Agent Route
     # 注册以后，FastAPI 才知道：POST /v1/agent/query
     application.include_router(agent_query_router)

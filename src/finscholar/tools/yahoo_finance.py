@@ -31,15 +31,10 @@ class YahooFinanceTool:
 
     name: ClassVar[str] = "Yahoo_Finance_Tool"
     description: ClassVar[str] = (
-        "获取股票、ETF、指数等金融标的的结构化历史行情；"
-        "不用于通用财经新闻搜索。"
+        "获取股票、ETF、指数等金融标的的结构化历史行情；不用于通用财经新闻搜索。"
     )
-    args_schema: ClassVar[type[YahooFinanceHistoryInput]] = (
-        YahooFinanceHistoryInput
-    )
-    output_schema: ClassVar[type[YahooFinanceHistoryOutput]] = (
-        YahooFinanceHistoryOutput
-    )
+    args_schema: ClassVar[type[YahooFinanceHistoryInput]] = YahooFinanceHistoryInput
+    output_schema: ClassVar[type[YahooFinanceHistoryOutput]] = YahooFinanceHistoryOutput
 
     def __init__(self, client: YahooHistoryClient) -> None:
         self._client = client

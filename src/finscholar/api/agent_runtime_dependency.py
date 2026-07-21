@@ -24,9 +24,7 @@ def get_agent_runtime(
 
     if runtime is None:
         raise HTTPException(
-            status_code=(
-                status.HTTP_503_SERVICE_UNAVAILABLE
-            ),
+            status_code=(status.HTTP_503_SERVICE_UNAVAILABLE),
             detail="Agent runtime is not available",
         )
 

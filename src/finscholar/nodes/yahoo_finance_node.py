@@ -43,9 +43,7 @@ async def run_yahoo_finance_node(
         return {
             "yahoo_finance_output": None,
             "yahoo_finance_error_type": "MissingYahooFinanceInput",
-            "yahoo_finance_error_message": (
-                "state 中缺少 yahoo_finance_input"
-            ),
+            "yahoo_finance_error_message": ("state 中缺少 yahoo_finance_input"),
         }
 
     try:
@@ -53,9 +51,7 @@ async def run_yahoo_finance_node(
     except ValidationError as exc:
         return {
             "yahoo_finance_output": None,
-            "yahoo_finance_error_type": (
-                "YahooFinanceInputValidationError"
-            ),
+            "yahoo_finance_error_type": ("YahooFinanceInputValidationError"),
             "yahoo_finance_error_message": str(exc),
         }
 

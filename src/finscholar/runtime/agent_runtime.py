@@ -3,8 +3,8 @@ from typing import Self
 
 from langgraph.graph.state import CompiledStateGraph
 
-from finscholar.clients.deepseek_router_client import DeepSeekRouterClient
-from finscholar.clients.qwen_router_client import QwenRouterClient
+from finscholar.clients.client_deepseek_router import DeepSeekRouterClient
+from finscholar.clients.client_qwen_router import QwenRouterClient
 from finscholar.clients.client_router import ManagedRouterClient
 from finscholar.clients.yahoo_finance_client import YahooFinanceClient
 from finscholar.clients.yfinance_gateway_client import YFinanceHistoryGateway

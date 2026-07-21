@@ -8,7 +8,6 @@ from uuid import UUID
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator
 
 
-
 class Evidence(BaseModel):
     """记录外部数据的来源、定位信息和原始内容。"""
 

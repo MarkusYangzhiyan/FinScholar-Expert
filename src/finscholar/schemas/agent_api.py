@@ -41,9 +41,7 @@ class AgentQueryRequest(BaseModel):
         normalized = value.strip()
 
         if not normalized:
-            raise ValueError(
-                "user_query must not be empty"
-            )
+            raise ValueError("user_query must not be empty")
 
         return normalized
 
@@ -66,12 +64,8 @@ class AgentQueryResponse(BaseModel):
     user_query: str
     router_decision: RouterDecision | None = None
     calculator_output: CalculatorOutput | None = None
-    yahoo_finance_output: (
-        YahooFinanceHistoryOutput | None
-    ) = None
-    errors: list[AgentExecutionError] = Field(
-        default_factory=list
-    )
+    yahoo_finance_output: YahooFinanceHistoryOutput | None = None
+    errors: list[AgentExecutionError] = Field(default_factory=list)
 
 
 __all__ = [

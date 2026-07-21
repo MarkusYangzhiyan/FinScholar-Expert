@@ -43,18 +43,13 @@ def summarize_state(
             ),
             "data_point_count": len(output.data_points),
             "latest_data_points": [
-                point.model_dump(mode="json")
-                for point in output.data_points[-5:]
+                point.model_dump(mode="json") for point in output.data_points[-5:]
             ],
         }
 
     return {
         "user_query": state.get("user_query"),
-        "router_decision": (
-            decision.model_dump(mode="json")
-            if decision is not None
-            else None
-        ),
+        "router_decision": (decision.model_dump(mode="json") if decision is not None else None),
         "router_error": build_error(
             state.get("router_error_type"),
             state.get("router_error_message"),
@@ -74,9 +69,7 @@ async def main() -> None:
     runtime = AgentRuntime.from_settings(settings)
 
     try:
-        state = await runtime.invoke(
-            "查询特斯拉 TSLA 最近一个月的每日历史行情"
-        )
+        state = await runtime.invoke("查询特斯拉 TSLA 最近一个月的每日历史行情")
     finally:
         await runtime.close()
 

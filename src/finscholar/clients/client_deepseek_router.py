@@ -5,8 +5,13 @@ from openai import APIError, AsyncOpenAI
 
 from finscholar.clients.client_router import RouterResponseError, RouterServiceError
 from finscholar.config.settings import Settings
-from finscholar.routing.router_function_calling import ROUTER_SYSTEM_PROMPT, ROUTER_TOOLS, parse_router_tool_calls
+from finscholar.routing.router_function_calling import (
+    ROUTER_SYSTEM_PROMPT,
+    ROUTER_TOOLS,
+    parse_router_tool_calls,
+)
 from finscholar.schemas.schemas_router import RouterBatch, RouterContext
+
 
 class DeepSeekRouterClient:
     """调用 DeepSeek API 完成工具路由。"""
@@ -51,13 +56,9 @@ class DeepSeekRouterClient:
         user_query = context.user_query.strip()
 
         if not user_query:
-            raise RouterResponseError(
-                "user_query must not be empty"
-            )
+            raise RouterResponseError("user_query must not be empty")
 
-        normalized_context = context.model_copy(
-            update={"user_query": user_query}
-        )
+        normalized_context = context.model_copy(update={"user_query": user_query})
 
         try:
             response = await self._client.chat.completions.create(
@@ -69,9 +70,7 @@ class DeepSeekRouterClient:
                     },
                     {
                         "role": "user",
-                        "content": normalized_context.model_dump_json(
-                            exclude_none=True
-                        ),
+                        "content": normalized_context.model_dump_json(exclude_none=True),
                     },
                 ],
                 tools=ROUTER_TOOLS,
@@ -79,32 +78,20 @@ class DeepSeekRouterClient:
                 parallel_tool_calls=True,
                 temperature=0,
                 extra_body={
-                    "thinking": {
-                        "type": (
-                            "enabled"
-                            if self._enable_thinking
-                            else "disabled"
-                        )
-                    }
+                    "thinking": {"type": ("enabled" if self._enable_thinking else "disabled")}
                 },
             )
 
         except APIError as exc:
-            raise RouterServiceError(
-                "DeepSeek Router 服务调用失败"
-            ) from exc
+            raise RouterServiceError("DeepSeek Router 服务调用失败") from exc
 
         if len(response.choices) != 1:
-            raise RouterResponseError(
-                "DeepSeek Router 必须返回一个响应选项"
-            )
+            raise RouterResponseError("DeepSeek Router 必须返回一个响应选项")
 
         tool_calls = response.choices[0].message.tool_calls
 
         if not tool_calls:
-            raise RouterResponseError(
-                "DeepSeek Router 必须返回至少一次工具调用"
-            )
+            raise RouterResponseError("DeepSeek Router 必须返回至少一次工具调用")
 
         return parse_router_tool_calls(
             tool_calls=[

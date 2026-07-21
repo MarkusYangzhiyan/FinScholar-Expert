@@ -34,10 +34,8 @@ class CalculatorInput(BaseModel):
     # 在创建这个对象之前，请以类的名义拦截指定的字段，并运行下面的检查逻辑
     # classmethod:类方法，在数据刚传进来、对象还没真正建好之前，这个方法就可以直接在类的层面上运行了
     # field_validator:当有人想要给括号里指定的字段赋值时，必须先通过下面这个函数的检查
-    @field_validator(
-        "expression"
-    )  
-    @classmethod  
+    @field_validator("expression")
+    @classmethod
     def validate_expression(cls, value: str) -> str:
         """清理表达式无用空格并禁止空白输入。"""
 
@@ -54,7 +52,7 @@ class CalculatorInput(BaseModel):
         cls,
         value: dict[str, Decimal],
     ) -> dict[str, Decimal]:
-        """变量名必须是普通 Python 标识符，禁止比如 user.password 或者 drop_table; 
+        """变量名必须是普通 Python 标识符，禁止比如 user.password 或者 drop_table;
         等可能引发安全漏洞的写法"""
 
         invalid_names = [name for name in value if not _VARIABLE_NAME_PATTERN.fullmatch(name)]

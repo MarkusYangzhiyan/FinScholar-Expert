@@ -13,19 +13,16 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator, field_valida
 
 class FinancialDataPoint(BaseModel):
     """记录一个具有明确口径、时间和来源的金融数值。"""
-    
-    model_config = ConfigDict(extra = "forbid")
-    
+
+    model_config = ConfigDict(extra="forbid")
+
     symbol: str
 
     # 标准化指标名称，例如 close_price、volume。
     metric_name: str
 
     # 金融数值使用 Decimal，避免二进制浮点误差。
-    value: Decimal = Field(
-        strict = True,
-        description="禁止直接传入二进制 float 的精确金融数值"
-    )
+    value: Decimal = Field(strict=True, description="禁止直接传入二进制 float 的精确金融数值")
 
     # 币种；成交量等非金额指标可以为空。
     currency: str | None = None
@@ -91,8 +88,6 @@ class FinancialDataPoint(BaseModel):
 
         return provider
 
-
-
     @field_validator("currency")
     @classmethod
     def normalize_currency(
@@ -110,8 +105,6 @@ class FinancialDataPoint(BaseModel):
             raise ValueError("currency 不得为空；不适用时应传入 None")
 
         return currency
-    
-
 
     @model_validator(mode="after")
     def validate_time_context(self) -> Self:
@@ -123,25 +116,19 @@ class FinancialDataPoint(BaseModel):
 
         # 此时has_period_start 和 has_period_end 是 bool 值
         if has_period_start != has_period_end:
-            raise ValueError(
-                "period_start 和 period_end 必须同时提供或同时为空"
-            )
+            raise ValueError("period_start 和 period_end 必须同时提供或同时为空")
 
         has_complete_period = has_period_start and has_period_end
 
         if not has_as_of_date and not has_complete_period:
-            raise ValueError(
-                "必须提供 as_of_date 或完整的 period_start/period_end"
-            )
+            raise ValueError("必须提供 as_of_date 或完整的 period_start/period_end")
 
         if (
             self.period_start is not None
             and self.period_end is not None
             and self.period_start > self.period_end
         ):
-            raise ValueError(
-                "period_start 不得晚于 period_end"
-            )
+            raise ValueError("period_start 不得晚于 period_end")
 
         return self
 

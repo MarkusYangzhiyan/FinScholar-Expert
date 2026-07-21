@@ -125,14 +125,12 @@ class YahooFinanceClient:
 
         if raw_result.frame.empty:
             return []
-        
+
         data_points: list[FinancialDataPoint] = []
 
         for index, value in raw_result.frame["Close"].items():
             if not isinstance(index, pd.Timestamp):
-                raise TypeError(
-                    "Yahoo 历史行情索引必须是 pandas.Timestamp"
-                )
+                raise TypeError("Yahoo 历史行情索引必须是 pandas.Timestamp")
 
             data_points.append(
                 FinancialDataPoint(

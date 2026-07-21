@@ -9,6 +9,7 @@ import yfinance as yf
 from finscholar.clients.yahoo_finance_client import YahooHistoryRawResult
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 
+
 # 这里只声明接口，具体代码由实际对象提供
 class YahooTicker(Protocol):
     """定义 Gateway 使用的最小 yf.Ticker 接口。"""
@@ -29,6 +30,7 @@ class YahooTicker(Protocol):
     def get_history_metadata(self) -> dict[str, object]:
         """获取历史行情元数据。"""
         ...
+
 
 # 类型别名: 符合这个类型的对象必须是可以调用的，接收一个str，返回一个 YahooTicker
 YahooTickerFactory: TypeAlias = Callable[[str], YahooTicker]
@@ -71,11 +73,7 @@ class YFinanceHistoryGateway:
 
         metadata = ticker.get_history_metadata()
         currency_value = metadata.get("currency")
-        currency = (
-            currency_value
-            if isinstance(currency_value, str)
-            else None
-        )
+        currency = currency_value if isinstance(currency_value, str) else None
 
         return YahooHistoryRawResult(
             frame=frame,

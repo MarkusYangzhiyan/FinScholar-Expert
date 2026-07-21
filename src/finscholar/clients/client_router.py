@@ -41,15 +41,16 @@ class RouterServiceError(RouterClientError):
 
 # 模型没有调用工具、调用多个工具、参数 JSON 错误
 class RouterResponseError(RouterClientError):
-    """路由模型响应无法转换成合法 RouterBatch。 """
+    """路由模型响应无法转换成合法 RouterBatch。"""
 
 
 class ManagedRouterClient(RouterClient, Protocol):
     """定义 Runtime 管理的 Router Client。"""
-    
+
     async def close(self) -> None:
         """关闭底层网络连接。"""
         ...
+
 
 __all__ = [
     "ManagedRouterClient",
@@ -57,5 +58,4 @@ __all__ = [
     "RouterClientError",
     "RouterResponseError",
     "RouterServiceError",
-    
 ]

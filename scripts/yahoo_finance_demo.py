@@ -13,12 +13,12 @@ def search_tesla_news() -> list[dict[str, Any]]:
 
     result = yf.Search(
         "Apple",
-        max_results=0,          # 证券代码搜索
-        news_count=10,          # 请求新闻数量，不保证最终一定返回这么多条
-        lists_count=0,          # Yahoo Finance 推荐列表
-        include_cb=False,       # 搜索关键词相关的公司分类信息
-        recommended=0,          # 控制推荐内容的返回数量
-        timeout=30,             # 主搜索请求最多等待
+        max_results=0,  # 证券代码搜索
+        news_count=10,  # 请求新闻数量，不保证最终一定返回这么多条
+        lists_count=0,  # Yahoo Finance 推荐列表
+        include_cb=False,  # 搜索关键词相关的公司分类信息
+        recommended=0,  # 控制推荐内容的返回数量
+        timeout=30,  # 主搜索请求最多等待
         raise_errors=True,
     )
     return result.news
