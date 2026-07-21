@@ -25,6 +25,7 @@ class AgentRuntime:
     def from_settings(cls, settings: Settings) -> Self:
         """根据统一配置创建完整 Agent。"""
 
+        # 路由
         if settings.router_backend == "vllm":
             router_client = QwenRouterClient.from_settings(settings)
         elif settings.router_backend == "deepseek":
@@ -33,6 +34,7 @@ class AgentRuntime:
         else:
             raise ValueError(f"不支持的 Router 后端：{settings.router_backend}")
 
+        # yahoo tool
         yahoo_gateway = YFinanceHistoryGateway(
             timeout_seconds=(settings.yfinance_request_timeout_seconds)
         )
@@ -41,6 +43,7 @@ class AgentRuntime:
 
         yahoo_tool = YahooFinanceTool(client=yahoo_client)
 
+        # 图编译
         compiled_graph = build_agent_graph(
             router_client=router_client, yahoo_finance_tool=yahoo_tool
         )
