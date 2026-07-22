@@ -1,8 +1,5 @@
-"""定义 FinScholar Expert 的 LangGraph 主状态骨架。
-
-本模块集中维护 AgentState，避免不同节点各自定义不兼容的 state 字段。
-当前版本只覆盖 Calculator 最小垂直切片；后续会逐步扩展路由、工具结果、
-证据链、审计事件和最终回答等字段。
+"""
+定义 FinScholar Expert 的 LangGraph 主状态。
 """
 
 from typing import Any, TypedDict
