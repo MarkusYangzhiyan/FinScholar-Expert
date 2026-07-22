@@ -10,7 +10,7 @@ from finscholar.graph.router_calculator_graph import (
     invoke_router_calculator_graph,
     route_after_router,
 )
-from finscholar.state.agent_state import create_initial_agent_state
+from finscholar.state.state_agent import create_initial_agent_state
 
 
 def test_route_after_router_selects_calculator_node() -> None:

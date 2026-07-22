@@ -6,7 +6,7 @@ from typing import Any
 
 from finscholar.config.settings import get_settings
 from finscholar.runtime.agent_runtime import AgentRuntime
-from finscholar.state.agent_state import AgentState
+from finscholar.state.state_agent import AgentState
 
 
 def build_error(

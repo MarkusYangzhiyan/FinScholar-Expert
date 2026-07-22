@@ -14,7 +14,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
 from finscholar.nodes.calculator_node import run_calculator_node
-from finscholar.state.agent_state import AgentState, create_initial_agent_state
+from finscholar.state.state_agent import AgentState, create_initial_agent_state
 
 CALCULATOR_NODE_NAME = "calculator"
 

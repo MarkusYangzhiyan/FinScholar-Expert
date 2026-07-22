@@ -6,7 +6,7 @@ from typing import Any, TypedDict
 
 from finscholar.clients.client_router import RouterClient, RouterClientError
 from finscholar.schemas.schemas_router import RouterDecision, ToolName
-from finscholar.state.agent_state import AgentState
+from finscholar.state.state_agent import AgentState
 
 
 class RouterNodeUpdate(TypedDict, total=False):

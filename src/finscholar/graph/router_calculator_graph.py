@@ -23,7 +23,7 @@ from langgraph.graph.state import CompiledStateGraph
 
 from finscholar.nodes.calculator_node import run_calculator_node
 from finscholar.nodes.router_node import run_router_node
-from finscholar.state.agent_state import AgentState, create_initial_agent_state
+from finscholar.state.state_agent import AgentState, create_initial_agent_state
 
 # LangGraph 中使用的节点名称。
 ROUTER_NODE_NAME = "router"

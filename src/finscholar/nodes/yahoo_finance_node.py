@@ -19,7 +19,7 @@ from finscholar.schemas.yahoo_finance import (
     YahooFinanceHistoryInput,
     YahooFinanceHistoryOutput,
 )
-from finscholar.state.agent_state import AgentState
+from finscholar.state.state_agent import AgentState
 from finscholar.tools.yahoo_finance import YahooFinanceTool
 
 

@@ -10,7 +10,7 @@ from finscholar.clients.yahoo_finance_client import YahooFinanceClient
 from finscholar.clients.yfinance_gateway_client import YFinanceHistoryGateway
 from finscholar.config.settings import Settings
 from finscholar.graph.agent_graph import build_agent_graph, invoke_agent_graph
-from finscholar.state.agent_state import AgentState
+from finscholar.state.state_agent import AgentState
 from finscholar.tools.yahoo_finance import YahooFinanceTool
 
 

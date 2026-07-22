@@ -12,7 +12,7 @@ from finscholar.nodes.yahoo_finance_node import (
     YahooFinanceNodeUpdate,
     run_yahoo_finance_node,
 )
-from finscholar.state.agent_state import AgentState, create_initial_agent_state
+from finscholar.state.state_agent import AgentState, create_initial_agent_state
 from finscholar.tools.yahoo_finance import YahooFinanceTool
 
 ROUTER_NODE_NAME = "router"

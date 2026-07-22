@@ -5,7 +5,7 @@ from finscholar.schemas.agent_api import (
     AgentExecutionStage,
     AgentQueryResponse,
 )
-from finscholar.state.agent_state import AgentState
+from finscholar.state.state_agent import AgentState
 
 
 def _append_error(

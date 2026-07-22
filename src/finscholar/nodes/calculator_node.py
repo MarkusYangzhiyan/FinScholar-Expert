@@ -12,7 +12,7 @@ from typing import TypedDict
 from pydantic import ValidationError
 
 from finscholar.schemas.calculator import CalculatorInput, CalculatorOutput
-from finscholar.state.agent_state import AgentState
+from finscholar.state.state_agent import AgentState
 from finscholar.tools.math_calculator import CalculatorError, MathCalculator
 
 

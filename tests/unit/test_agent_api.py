@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, Mock, patch
 from fastapi.testclient import TestClient
 
 from finscholar.main import create_app
-from finscholar.state.agent_state import create_initial_agent_state
+from finscholar.state.state_agent import create_initial_agent_state
 
 
 def test_agent_query_uses_shared_runtime() -> None:
