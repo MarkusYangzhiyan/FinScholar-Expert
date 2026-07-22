@@ -3,9 +3,9 @@
 """
 
 from operator import add
-from typing import TypedDict, Annotated
+from typing import Annotated, TypedDict
 
-from finscholar.schemas.schemas_router import RouterBatch, RouterActionResult
+from finscholar.schemas.schemas_router import RouterActionResult, RouterBatch
 
 
 # total=False 表示字段可以按需逐步写入。
@@ -16,11 +16,11 @@ class AgentState(TypedDict, total=False):
 
     user_query: str
 
-    router_batch : RouterBatch | None 
-    router_round_number : int 
-    router_action_results : Annotated[list[RouterActionResult], add]
-    router_error_type : str | None
-    router_error_message : str | None 
+    router_batch: RouterBatch | None
+    router_round_number: int
+    router_action_results: Annotated[list[RouterActionResult], add]
+    router_error_type: str | None
+    router_error_message: str | None
 
 
 def create_initial_agent_state(user_query: str) -> AgentState:

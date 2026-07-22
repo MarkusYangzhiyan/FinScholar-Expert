@@ -5,17 +5,17 @@ from typing import cast
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Send
+
 from finscholar.clients.client_router import RouterClient
-from finscholar.nodes.calculator_node import run_calculator_node
 from finscholar.nodes.router_node import RouterNodeUpdate, run_router_node
-from finscholar.nodes.yahoo_finance_node import (
-    YahooFinanceNodeUpdate,
-    run_yahoo_finance_node,
+from finscholar.nodes.tool_action_node import (
+    ToolActionNodeUpdate,
+    ToolActionState,
+    run_tool_action_node,
 )
 from finscholar.state.state_agent import AgentState, create_initial_agent_state
-from finscholar.tools.yahoo_finance import YahooFinanceTool
 from finscholar.tools.math_calculator import MathCalculator
-from finscholar.nodes.tool_action_node import ToolActionState, ToolActionNodeUpdate, run_tool_action_node
+from finscholar.tools.yahoo_finance import YahooFinanceTool
 
 ROUTER_NODE_NAME = "router"
 TOOL_ACTION_NODE_NAME = "tool_action"
@@ -32,9 +32,7 @@ def route_after_router(state: AgentState) -> str | list[Send]:
     if batch is None or batch.status != "execute":
         return END
 
-    return [
-        Send(TOOL_ACTION_NODE_NAME, {"action":action}) for action in batch.actions
-    ]
+    return [Send(TOOL_ACTION_NODE_NAME, {"action": action}) for action in batch.actions]
 
 
 def build_agent_graph(
@@ -69,10 +67,7 @@ def build_agent_graph(
     graph_builder.add_node(TOOL_ACTION_NODE_NAME, tool_action_node)
 
     graph_builder.add_edge(START, ROUTER_NODE_NAME)
-    graph_builder.add_conditional_edges(
-        ROUTER_NODE_NAME,
-        route_after_router
-    )
+    graph_builder.add_conditional_edges(ROUTER_NODE_NAME, route_after_router)
     graph_builder.add_edge(TOOL_ACTION_NODE_NAME, ROUTER_NODE_NAME)
 
     return graph_builder.compile()
