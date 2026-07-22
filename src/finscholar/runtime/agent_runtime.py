@@ -45,7 +45,7 @@ class AgentRuntime:
 
         # 图编译
         compiled_graph = build_agent_graph(
-            router_client=router_client, yahoo_finance_tool=yahoo_tool
+            router_client=router_client, yahoo_finance_tool=yahoo_tool,router_max_rounds = settings.router_max_rounds
         )
 
         return cls(_compiled_graph=compiled_graph, _router_client=router_client)

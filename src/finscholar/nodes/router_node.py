@@ -18,7 +18,12 @@ class RouterNodeUpdate(TypedDict, total=False):
     router_error_message: str | None
 
 
-async def run_router_node(state: AgentState, router_client: RouterClient) -> RouterNodeUpdate:
+async def run_router_node(
+    state: AgentState, 
+    *, 
+    router_client: RouterClient,
+    router_max_rounds : int
+) -> RouterNodeUpdate:
     """据当前 Agent 状态执行一轮路由。"""
 
     user_query = state.get("user_query")
@@ -30,6 +35,14 @@ async def run_router_node(state: AgentState, router_client: RouterClient) -> Rou
             "router_round_number": current_round,
             "router_error_type": "MissingUserQuery",
             "router_error_message": "state 中缺少 user_query",
+        }
+
+    if current_round >= router_max_rounds:
+        return {
+            "router_batch": None,
+            "router_round_number": current_round,
+            "router_error_type": "RouterRoundLimitExceeded",
+            "router_error_message": f"Router 已达到最大执行轮数 {router_max_rounds}，工作流终止"
         }
 
     next_round = current_round + 1

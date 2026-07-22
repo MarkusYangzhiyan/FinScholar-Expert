@@ -46,6 +46,7 @@ async def test_router_node_creates_first_batch() -> None:
     update = await run_router_node(
         state,
         router_client=router_client,
+        router_max_rounds = 3
     )
 
     context = router_client.received_context
@@ -66,3 +67,23 @@ async def test_router_node_creates_first_batch() -> None:
     )
     assert update["router_round_number"] == 1
     assert update["router_error_type"] is None
+
+async def test_router_node_stops_at_round_limit() -> None:
+    """达到最大轮数时不得继续调用 Router Client。"""
+
+    router_client = FakeRouterClient()
+    state = create_initial_agent_state("查询 TSLA 行情")
+    state["router_round_number"] = 2
+
+    update = await run_router_node(
+        state,
+        router_client=router_client,
+        router_max_rounds=2,
+    )
+
+    assert router_client.received_context is None
+    assert update["router_batch"] is None
+    assert update["router_round_number"] == 2
+    assert update["router_error_type"] == "RouterRoundLimitExceeded"
+    assert update["router_error_message"] is not None
+    assert "2" in update["router_error_message"]

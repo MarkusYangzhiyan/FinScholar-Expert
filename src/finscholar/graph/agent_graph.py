@@ -39,6 +39,7 @@ def build_agent_graph(
     *,
     router_client: RouterClient,
     yahoo_finance_tool: YahooFinanceTool,
+    router_max_rounds:int 
 ) -> CompiledStateGraph:
     """构建支持批次工具调用的主 Agent Graph。"""
 
@@ -50,6 +51,7 @@ def build_agent_graph(
         return await run_router_node(
             state,
             router_client=router_client,
+            router_max_rounds = router_max_rounds
         )
 
     async def tool_action_node(

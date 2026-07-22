@@ -87,6 +87,7 @@ async def test_agent_graph_executes_action_batch() -> None:
     graph = build_agent_graph(
         router_client=router_client,
         yahoo_finance_tool=yahoo_tool,
+        router_max_rounds = 3
     )
 
     state = await invoke_agent_graph(
