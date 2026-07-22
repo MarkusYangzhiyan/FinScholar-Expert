@@ -1,4 +1,4 @@
-"""测试 Agent Graph 的 Yahoo Finance 主链路。"""
+"""测试主 Agent Graph 的批次工具调用链路。"""
 
 from decimal import Decimal
 
@@ -9,55 +9,57 @@ from finscholar.clients.yahoo_finance_client import (
     YahooHistoryRawResult,
 )
 from finscholar.graph.agent_graph import build_agent_graph, invoke_agent_graph
-from finscholar.schemas.schemas_router import RouterDecision
+from finscholar.schemas.calculator import CalculatorInput
+from finscholar.schemas.schemas_router import (
+    RouterAction,
+    RouterBatch,
+    RouterContext,
+)
 from finscholar.schemas.yahoo_finance import YahooFinanceHistoryInput
 from finscholar.tools.yahoo_finance import YahooFinanceTool
-from finscholar.schemas.calculator import CalculatorInput
 
 
 class FakeRouterClient:
-    """返回固定的 Yahoo Finance 路由决策。"""
+    """第一轮调用工具，第二轮结束。"""
 
     def __init__(self) -> None:
-        self.received_query: str | None = None
+        self.contexts: list[RouterContext] = []
 
-    async def route(self, user_query: str) -> RouterDecision:
-        self.received_query = user_query
+    async def route(self, context: RouterContext) -> RouterBatch:
+        self.contexts.append(context)
 
-        return RouterDecision(
-            selected_tool="Yahoo_Finance_Tool",
-            reason="用户要求查询历史行情",
-            yahoo_finance_input=YahooFinanceHistoryInput(
-                symbol="TSLA",
-                period="1mo",
-                interval="1d",
-            ),
-        )
+        if context.action_results:
+            return RouterBatch(
+                status="finalize",
+                reason="工具结果已经足够",
+            )
 
-
-class FakeCalculatorRouterClient:
-    """返回固定的 Calculator 路由决策。"""
-
-    def __init__(self) -> None:
-        self.received_query: str | None = None
-
-    async def route(
-        self,
-        user_query: str,
-    ) -> RouterDecision:
-        self.received_query = user_query
-
-        return RouterDecision(
-            selected_tool="Math_Calculator",
-            reason="用户要求执行数学计算",
-            calculator_input=CalculatorInput(
-                expression="1 + 2 * 3",
-            ),
+        return RouterBatch(
+            status="execute",
+            reason="行情查询和计算互不依赖，可以并行执行",
+            actions=[
+                RouterAction(
+                    selected_tool="Yahoo_Finance_Tool",
+                    reason="用户要求查询行情",
+                    yahoo_finance_input=YahooFinanceHistoryInput(
+                        symbol="TSLA",
+                        period="1mo",
+                        interval="1d",
+                    ),
+                ),
+                RouterAction(
+                    selected_tool="Math_Calculator",
+                    reason="用户要求执行计算",
+                    calculator_input=CalculatorInput(
+                        expression="1 + 2 * 3",
+                    ),
+                ),
+            ],
         )
 
 
 class FakeYahooHistoryGateway:
-    """返回固定行情，不访问真实网络。"""
+    """返回固定行情，不访问网络。"""
 
     def fetch_history(
         self,
@@ -65,75 +67,51 @@ class FakeYahooHistoryGateway:
     ) -> YahooHistoryRawResult:
         frame = pd.DataFrame(
             {"Close": [407.76]},
-            index=pd.DatetimeIndex(
-                ["2026-07-10"],
-                name="Date",
-            ),
+            index=pd.DatetimeIndex(["2026-07-10"], name="Date"),
         )
-
         return YahooHistoryRawResult(
             frame=frame,
             currency="USD",
         )
 
 
-async def test_agent_graph_routes_to_yahoo_finance() -> None:
-    """Router 应进入 Yahoo Node 并返回结构化行情。"""
+async def test_agent_graph_executes_action_batch() -> None:
+    """主图应并行执行工具，并把结果交回 Router。"""
 
     router_client = FakeRouterClient()
-    client = YahooFinanceClient(
-        gateway=FakeYahooHistoryGateway(),
-    )
-    tool = YahooFinanceTool(client=client)
-    graph = build_agent_graph(
-        router_client=router_client,
-        yahoo_finance_tool=tool,
-    )
-
-    result = await invoke_agent_graph(
-        compiled_graph=graph,
-        user_query="查询 TSLA 历史行情",
-    )
-
-    assert router_client.received_query == "查询 TSLA 历史行情"
-    assert result["router_selected_tool"] == "Yahoo_Finance_Tool"
-
-    output = result["yahoo_finance_output"]
-
-    assert output is not None
-    assert output.query.symbol == "TSLA"
-    assert output.data_points[0].value == Decimal("407.76")
-    assert result["yahoo_finance_error_type"] is None
-
-
-async def test_agent_graph_routes_to_calculator() -> None:
-    """Router 应进入 Calculator Node 并返回结构化计算结果。"""
-
-    router_client = FakeCalculatorRouterClient()
-
-    yahoo_client = YahooFinanceClient(
-        gateway=FakeYahooHistoryGateway(),
-    )
     yahoo_tool = YahooFinanceTool(
-        client=yahoo_client,
+        client=YahooFinanceClient(
+            gateway=FakeYahooHistoryGateway(),
+        )
     )
-
     graph = build_agent_graph(
         router_client=router_client,
         yahoo_finance_tool=yahoo_tool,
     )
 
-    result = await invoke_agent_graph(
+    state = await invoke_agent_graph(
         compiled_graph=graph,
-        user_query="计算 1 + 2 * 3",
+        user_query="查询 TSLA 行情，并计算 1 + 2 * 3",
     )
 
-    assert router_client.received_query == "计算 1 + 2 * 3"
-    assert result["router_selected_tool"] == "Math_Calculator"
+    assert [context.round_number for context in router_client.contexts] == [1, 2]
+    assert len(router_client.contexts[1].action_results) == 2
+    assert state["router_batch"].status == "finalize"
 
-    output = result["calculator_output"]
+    results = {
+        result.action.selected_tool: result
+        for result in state["router_action_results"]
+    }
 
-    assert output is not None
-    assert output.result == Decimal("7")
-    assert result["calculator_error_type"] is None
-    assert result["yahoo_finance_output"] is None
+    calculator_result = results["Math_Calculator"]
+    assert calculator_result.status == "success"
+    assert calculator_result.output is not None
+    assert calculator_result.output["result"] == "7"
+
+    yahoo_result = results["Yahoo_Finance_Tool"]
+    assert yahoo_result.status == "success"
+    assert yahoo_result.output is not None
+    assert yahoo_result.output["query"]["symbol"] == "TSLA"
+    assert Decimal(yahoo_result.output["data_points"][0]["value"]) == Decimal(
+        "407.76"
+    )
