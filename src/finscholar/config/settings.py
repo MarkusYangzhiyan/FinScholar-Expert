@@ -135,6 +135,7 @@ class Settings(BaseSettings):
     # ----------------------------------------------------------
 
     router_backend: Literal["vllm", "deepseek"] = "deepseek"
+    router_max_round : int = Field(default = 5, ge = 1, le =10)
     # vLLM 在本地 8000 端口提供 OpenAI 兼容接口。
     qwen_base_url: str = "http://127.0.0.1:8000/v1"
     # 本地服务无需真实密钥，EMPTY 用于满足客户端的非空校验。
