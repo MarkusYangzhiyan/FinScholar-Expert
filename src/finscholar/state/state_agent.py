@@ -3,11 +3,9 @@
 """
 
 from operator import add
-from typing import Any, TypedDict, Annotated
+from typing import TypedDict, Annotated
 
-from finscholar.schemas.calculator import CalculatorOutput
-from finscholar.schemas.schemas_router import RouterBatch, ToolName, RouterActionResult, RouterDecision
-from finscholar.schemas.yahoo_finance import YahooFinanceHistoryOutput
+from finscholar.schemas.schemas_router import RouterBatch, RouterActionResult
 
 
 # total=False 表示字段可以按需逐步写入。
